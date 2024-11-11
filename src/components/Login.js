@@ -3,14 +3,14 @@ import { login } from "../services/authService";
 import { Link } from "react-router-dom";
 import "./Auth.css";
 
-function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+function Login({ onLoginSuccess }) {
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
 
   const handleLogin = async () => {
     try {
       await login(email, password);
-      alert("User logged in successfully!");
+      onLoginSuccess();
     } catch (error) {
       alert("Error logging in: " + error.message);
     }

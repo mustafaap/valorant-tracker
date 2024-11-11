@@ -1,5 +1,4 @@
 
-
 .home-container {
     display: flex;
     flex-direction: column;
@@ -17,7 +16,7 @@
   .login-signup-btn {
     position: absolute;
     top: 20px;
-    right: 20px; /* Move to the top right */
+    right: 20px;
     padding: 10px 20px;
     background-color: #4CAF50;
     color: white;
@@ -40,7 +39,7 @@
   }
   
   .modal-content {
-    background-color: white;
+    background-color: rgb(255, 255, 255);
     padding: 20px;
     width: 300px;
     border-radius: 8px;
