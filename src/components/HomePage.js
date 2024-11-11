@@ -10,7 +10,7 @@ function HomePage() {
 
   const toggleModal = () => setShowModal(!showModal);
   const toggleForm = () => setIsLogin(!isLogin);
-
+  //Homepage Comp
   return (
     <div className="home-container">
       <button className="login-signup-btn" onClick={toggleModal}>
