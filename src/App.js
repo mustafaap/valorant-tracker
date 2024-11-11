@@ -1,20 +1,53 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import HomePage from "./components/HomePage";
+import Profile from "./components/Profile";
 import Login from "./components/Login";
 import Signup from "./components/Signup";
+import './App.css';
 
 function App() {
   return (
     <Router>
-      <div>
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-        </Routes>
-      </div>
+      <Routes>
+        {/* Routes without sidebar */}
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
+
+        {/* Routes with sidebar */}
+        <Route
+          path="/"
+          element={
+            <div className="app-container">
+              <Sidebar />
+              <div className="content">
+                <HomePage />
+              </div>
+            </div>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <div className="app-container">
+              <Sidebar />
+              <div className="content">
+                <Profile />
+              </div>
+            </div>
+          }
+        />
+      </Routes>
     </Router>
+  );
+}
+
+function Sidebar() {
+  return (
+    <div className="sidebar">
+      <Link to="/" className="tab">Home</Link>
+      <Link to="/profile" className="tab">Profile</Link>
+    </div>
   );
 }
 

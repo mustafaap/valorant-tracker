@@ -36,3 +36,61 @@
     transform: rotate(360deg);
   }
 }
+
+.app-container {
+  display: flex;
+  height: 100vh;
+  background-color: #1e1e2f;
+  color: #f0f0f5;
+}
+
+.sidebar {
+  width: 250px;
+  background-color: #2a2a3b;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+}
+
+.tab {
+  color: #cfcfcf;
+  text-decoration: none;
+  margin: 15px 0;
+  padding: 10px 20px;
+  border-radius: 4px;
+  font-weight: bold;
+  transition: background-color 0.2s;
+}
+
+.tab:hover {
+  background-color: #3b3b4d;
+}
+
+.nested-tab {
+  color: #cfcfcf;
+  text-decoration: none;
+  margin: 10px 0 10px 20px; /* Indent for nested items */
+  padding: 8px 20px;
+  border-radius: 4px;
+  font-weight: normal;
+  transition: background-color 0.2s;
+}
+
+.nested-tab:hover {
+  background-color: #3b3b4d;
+}
+
+.content {
+  flex: 1;
+  padding: 30px;
+  background-color: #1e1e2f;
+  color: #f0f0f5;
+}
+
+h2 {
+  color: #ffffff;
+}
+
+p {
+  color: #b0b0c3;
+}
