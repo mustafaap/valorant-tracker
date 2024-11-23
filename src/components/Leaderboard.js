@@ -36,8 +36,8 @@ function Leaderboard() {
       <h2>Top 100 Players</h2>
       <div
         style={{
-          maxHeight: "500px", // Fixed height for scrollable container
-          overflowY: "auto", // Enable vertical scrolling
+          maxHeight: "500px",
+          overflowY: "auto",
           border: "1px solid #ccc",
           borderRadius: "8px",
           padding: "10px",
