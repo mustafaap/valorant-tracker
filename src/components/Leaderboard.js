@@ -5,6 +5,7 @@ function Leaderboard() {
   const [leaderboard, setLeaderboard] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [hoveredPlayer, setHoveredPlayer] = useState(null); // New state to track hovered player
 
   const currentActId = "dcde7346-4085-de4f-c463-2489ed47983b"; // Replace with the actual Act ID
 
@@ -36,7 +37,7 @@ function Leaderboard() {
       <h2>Top 100 Players</h2>
       <div
         style={{
-          maxHeight: "500px",
+          maxHeight: "840px",
           overflowY: "auto",
           border: "1px solid #ccc",
           borderRadius: "8px",
@@ -54,13 +55,50 @@ function Leaderboard() {
           </thead>
           <tbody>
             {leaderboard.map((player, index) => (
-              <tr key={player.puuid}>
-                <td style={{ padding: "10px", borderBottom: "1px solid #ccc" }}>{index + 1}</td>
-                <td style={{ padding: "10px", borderBottom: "1px solid #ccc" }}>
+              <tr
+                key={player.puuid}
+                onMouseEnter={() => setHoveredPlayer(player.puuid)} // Set hovered player on mouse enter
+                onMouseLeave={() => setHoveredPlayer(null)} // Reset on mouse leave
+                style={{
+                  backgroundColor: hoveredPlayer === player.puuid ? "#f0f8ff" : "transparent", // Highlight on hover
+                }}
+              >
+                <td
+                  style={{
+                    padding: "10px",
+                    borderBottom: "1px solid #ccc",
+                    color: hoveredPlayer === player.puuid ? "green" : "white", // Change text color to green on hover
+                  }}
+                >
+                  {index + 1}
+                </td>
+                <td
+                  style={{
+                    padding: "10px",
+                    borderBottom: "1px solid #ccc",
+                    color: hoveredPlayer === player.puuid ? "green" : "white", // Change text color to green on hover
+                  }}
+                >
                   {player.gameName || "Anonymous"}#{player.tagLine || ""}
                 </td>
-                <td style={{ padding: "10px", borderBottom: "1px solid #ccc" }}>{player.rankedRating}</td>
-                <td style={{ padding: "10px", borderBottom: "1px solid #ccc" }}>{player.numberOfWins}</td>
+                <td
+                  style={{
+                    padding: "10px",
+                    borderBottom: "1px solid #ccc",
+                    color: hoveredPlayer === player.puuid ? "green" : "white", // Change text color to green on hover
+                  }}
+                >
+                  {player.rankedRating}
+                </td>
+                <td
+                  style={{
+                    padding: "10px",
+                    borderBottom: "1px solid #ccc",
+                    color: hoveredPlayer === player.puuid ? "green" : "white", // Change text color to green on hover
+                  }}
+                >
+                  {player.numberOfWins}
+                </td>
               </tr>
             ))}
           </tbody>

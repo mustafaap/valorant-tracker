@@ -85,3 +85,44 @@
     margin-top: 10px;
     cursor: pointer;
   }
+
+  .image-section {
+    margin-top: 20px;
+    text-align: center;
+  }
+  
+  .image-container {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .home-image {
+    width: 600px;
+    height: 600px;
+    object-fit: cover;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: opacity 0.3s ease;
+  }
+  
+  .home-image-hover {
+    width: 600px;
+    height: 600px;
+    object-fit: cover;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0; /* Initially hidden */
+    transition: opacity 0.3s ease;
+  }
+  
+  .image-container:hover .home-image {
+    opacity: 0; /* Hide the first image */
+  }
+  
+  .image-container:hover .home-image-hover {
+    opacity: 1; /* Show the second image */
+  }
+  

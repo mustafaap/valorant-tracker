@@ -57,9 +57,25 @@ function HomePage() {
   
         <div className="about-section">
           <h1>About Valorant Tracker</h1>
-          <p>This project helps Valorant players track their in-game performance, analyze match data, and improve their gameplay.</p>
+          <p>Valorant Tracker is the ultimate tool for players looking to take their game to the next level. It allows users to track in-game performance, dive into detailed match stats, and identify strengths and weaknesses. With these insights, players can refine their skills, improve their strategies, and climb the ranks in Valorant.</p>
+          <p> </p>
           <p>Whether you're a casual player or a competitive gamer, this tool provides insights into your strengths and weaknesses.</p>
         </div>
+
+        <section className="image-section">
+        <div className="image-container">
+          <img
+            src="/LOGO.png" 
+            alt="Valorant Logo"
+            className="home-image"
+          />
+          <img
+            src="/VALORANT.png"
+            alt="Valorant Gameplay"
+            className="home-image-hover"
+          />
+        </div>
+      </section>
   
         {showModal && !isLoggedIn && (
           <div className="modal">
