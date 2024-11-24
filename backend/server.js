@@ -16,7 +16,9 @@ app.use(cors());
 app.get("/leaderboard", async (req, res) => {
   const actId = req.query.actId; // Pass actId as a query parameter
   if (!actId) {
-    return res.status(400).json({ error: "Missing actId in query parameters." });
+    return res
+      .status(400)
+      .json({ error: "Missing actId in query parameters." });
   }
 
   try {
@@ -30,7 +32,10 @@ app.get("/leaderboard", async (req, res) => {
     );
     res.json(response.data);
   } catch (error) {
-    console.error("Error fetching leaderboard:", error.response?.data || error.message);
+    console.error(
+      "Error fetching leaderboard:",
+      error.response?.data || error.message
+    );
     res.status(500).json({ error: "Failed to fetch leaderboard." });
   }
 });
@@ -40,13 +45,15 @@ app.get("/api/henrik-stats", async (req, res) => {
   const { username, tagline } = req.query;
 
   if (!username || !tagline) {
-    return res.status(400).json({ error: "Missing username or tagline in query parameters." });
+    return res
+      .status(400)
+      .json({ error: "Missing username or tagline in query parameters." });
   }
 
   try {
     const response = await axios.get(
       `https://api.henrikdev.xyz/valorant/v1/account/${username}/${tagline}`,
-      
+
       {
         headers: {
           Authorization: HENRIK_API_KEY,
@@ -55,7 +62,10 @@ app.get("/api/henrik-stats", async (req, res) => {
     );
     res.json(response.data); // Send the response data back to the frontend
   } catch (error) {
-    console.error("Error fetching user stats from Henrik API:", error.response?.data || error.message);
+    console.error(
+      "Error fetching user stats from Henrik API:",
+      error.response?.data || error.message
+    );
     res.status(error.response?.status || 500).json({
       error: error.response?.data || "Failed to fetch user stats.",
     });
@@ -67,7 +77,9 @@ app.get("/api/match-history", async (req, res) => {
   const { region, username, tagline } = req.query;
 
   if (!region || !username || !tagline) {
-    return res.status(400).json({ error: "Missing region, username, or tagline in query parameters." });
+    return res.status(400).json({
+      error: "Missing region, username, or tagline in query parameters.",
+    });
   }
 
   try {
@@ -81,9 +93,42 @@ app.get("/api/match-history", async (req, res) => {
     );
     res.json(response.data); // Return match history data to the frontend
   } catch (error) {
-    console.error("Error fetching match history from Henrik API:", error.response?.data || error.message);
+    console.error(
+      "Error fetching match history from Henrik API:",
+      error.response?.data || error.message
+    );
     res.status(error.response?.status || 500).json({
       error: error.response?.data || "Failed to fetch match history.",
+    });
+  }
+});
+
+app.get("/api/rank", async (req, res) => {
+  const { region, username, tagline } = req.query;
+
+  if (!region || !username || !tagline) {
+    return res.status(400).json({
+      error: "Missing region, username, or tagline in query parameters.",
+    });
+  }
+
+  try {
+    const response = await axios.get(
+      `https://api.henrikdev.xyz/valorant/v2/mmr/${region}/${username}/${tagline}`,
+      {
+        headers: {
+          Authorization: HENRIK_API_KEY,
+        },
+      }
+    );
+    res.json(response.data); // Return match history data to the frontend
+  } catch (error) {
+    console.error(
+      "Error fetching MMR Data from Henrik API:",
+      error.response?.data || error.message
+    );
+    res.status(error.response?.status || 500).json({
+      error: error.response?.data || "Failed to fetch MMR data.",
     });
   }
 });
