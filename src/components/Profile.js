@@ -12,6 +12,7 @@ function Profile() {
   const [hoveredMatch, setHoveredMatch] = useState(null); // Track hovered match
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [rank, setRank] = useState(null);
 
   useEffect(() => {
     const fetchProfileData = async () => {
@@ -29,20 +30,41 @@ function Profile() {
             setRiotTagline(riotTagline);
 
             // Fetch user stats
-            const statsResponse = await axios.get("http://localhost:5001/api/henrik-stats", {
-              params: { username: riotUsername, tagline: riotTagline },
-            });
+            const statsResponse = await axios.get(
+              "http://localhost:5001/api/henrik-stats",
+              {
+                params: { username: riotUsername, tagline: riotTagline },
+              }
+            );
 
             const { data } = statsResponse.data;
             setPuuid(data.puuid);
 
             // Fetch match history
-            const matchHistoryResponse = await axios.get("http://localhost:5001/api/match-history", {
-              params: { region: data.region, username: riotUsername, tagline: riotTagline },
-            });
+            const matchHistoryResponse = await axios.get(
+              "http://localhost:5001/api/match-history",
+              {
+                params: {
+                  region: data.region,
+                  username: riotUsername,
+                  tagline: riotTagline,
+                },
+              }
+            );
 
+            const mmrResponse = await axios.get(
+              "http://localhost:5001/api/rank",
+              {
+                params: {
+                  region: data.region,
+                  username: riotUsername,
+                  tagline: riotTagline,
+                },
+              }
+            );
             setPlayerStats(data);
             setMatchHistory(matchHistoryResponse.data.data); // Assuming match data is in `.data`
+            setRank(mmrResponse.data.data);
           } else {
             throw new Error("User data does not exist in Firestore.");
           }
@@ -61,19 +83,43 @@ function Profile() {
   }, []);
 
   if (loading) return <p>Loading...</p>;
-  if (error) return <p style={{ color: "red" }}>{typeof error === "string" ? error : "An error occurred."}</p>;
+  if (error)
+    return (
+      <p style={{ color: "red" }}>
+        {typeof error === "string" ? error : "An error occurred."}
+      </p>
+    );
 
   return (
     <div style={{ padding: "20px" }}>
-      <h2>Welcome, {riotUsername}#{riotTagline}!</h2>
+      <h2>
+        Welcome, {riotUsername}#{riotTagline}!
+      </h2>
       <h3>Basic Information</h3>
-      <p><strong>Game Name:</strong> {riotUsername}#{riotTagline}</p>
-      <p><strong>Region:</strong> {playerStats?.region?.toUpperCase() || "N/A"}</p>
-      <p><strong>PUUID:</strong> {puuid}</p>
-
+      <p>
+        <strong>Game Name:</strong> {riotUsername}#{riotTagline}
+      </p>
+      <p>
+        <strong>Region:</strong> {playerStats?.region?.toUpperCase() || "N/A"}
+      </p>
+      <p>
+        <strong>PUUID:</strong> {puuid}
+      </p>
+      <p>
+        <strong>Current Rank:</strong>
+        {rank?.current_data?.currenttierpatched || "Unranked"}
+      </p>
+      <p>
+        <strong>Highest Rank:</strong>
+        {rank?.highest_rank?.patched_tier || "Unranked"}
+      </p>
       <h3>Player Card</h3>
       {playerStats?.card?.small && (
-        <img src={playerStats.card.small} alt="Player Card" style={{ width: "150px", height: "auto" }} />
+        <img
+          src={playerStats.card.small}
+          alt="Player Card"
+          style={{ width: "150px", height: "auto" }}
+        />
       )}
 
       <h3>Match History</h3>
@@ -85,44 +131,142 @@ function Profile() {
             border: "1px solid #ccc",
             borderRadius: "8px",
             padding: "10px",
-            margin: "0 auto", 
+            margin: "0 auto",
           }}
         >
           <table style={{ width: "100%", borderCollapse: "collapse" }}>
             <thead>
               <tr>
-                <th style={{ textAlign: "left", padding: "10px", borderBottom: "1px solid #ccc" }}>Map</th>
-                <th style={{ textAlign: "left", padding: "10px", borderBottom: "1px solid #ccc" }}>Mode</th>
-                <th style={{ textAlign: "left", padding: "10px", borderBottom: "1px solid #ccc" }}>Kills</th>
-                <th style={{ textAlign: "left", padding: "10px", borderBottom: "1px solid #ccc" }}>Deaths</th>
-                <th style={{ textAlign: "left", padding: "10px", borderBottom: "1px solid #ccc" }}>Assists</th>
-                <th style={{ textAlign: "left", padding: "10px", borderBottom: "1px solid #ccc" }}>KDA</th>
+                <th
+                  style={{
+                    textAlign: "left",
+                    padding: "10px",
+                    borderBottom: "1px solid #ccc",
+                  }}
+                >
+                  Map
+                </th>
+                <th
+                  style={{
+                    textAlign: "left",
+                    padding: "10px",
+                    borderBottom: "1px solid #ccc",
+                  }}
+                >
+                  Mode
+                </th>
+                <th
+                  style={{
+                    textAlign: "left",
+                    padding: "10px",
+                    borderBottom: "1px solid #ccc",
+                  }}
+                >
+                  Kills
+                </th>
+                <th
+                  style={{
+                    textAlign: "left",
+                    padding: "10px",
+                    borderBottom: "1px solid #ccc",
+                  }}
+                >
+                  Deaths
+                </th>
+                <th
+                  style={{
+                    textAlign: "left",
+                    padding: "10px",
+                    borderBottom: "1px solid #ccc",
+                  }}
+                >
+                  Assists
+                </th>
+                <th
+                  style={{
+                    textAlign: "left",
+                    padding: "10px",
+                    borderBottom: "1px solid #ccc",
+                  }}
+                >
+                  KDA
+                </th>
               </tr>
             </thead>
             <tbody>
-              {matchHistory.map((match, index) => (
-                <tr
-                  key={index}
-                  onMouseEnter={() => setHoveredMatch(index)} // Set hovered match on mouse enter
-                  onMouseLeave={() => setHoveredMatch(null)} // Reset on mouse leave
-                  style={{
-                    backgroundColor: hoveredMatch === index ? "#f0f8ff" : "transparent", // Highlight on hover
-                  }}
-                >
-                  <td style={{ padding: "10px", borderBottom: "1px solid #ccc" }}>
-                    {match.meta?.map?.name || "Unknown"}
-                  </td>
-                  <td style={{ padding: "10px", borderBottom: "1px solid #ccc" }}>
-                    {match.meta?.mode || "Unknown"}
-                  </td>
-                  <td style={{ padding: "10px", borderBottom: "1px solid #ccc" }}>{match.stats?.kills || 0}</td>
-                  <td style={{ padding: "10px", borderBottom: "1px solid #ccc" }}>{match.stats?.deaths || 0}</td>
-                  <td style={{ padding: "10px", borderBottom: "1px solid #ccc" }}>{match.stats?.assists || 0}</td>
-                  <td style={{ padding: "10px", borderBottom: "1px solid #ccc" }}>
-                    {((match.stats?.kills + match.stats?.assists) / (match.stats?.deaths || 1)).toFixed(2)}
-                  </td>
-                </tr>
-              ))}
+              {matchHistory.map((match, index) => {
+                const winningTeam =
+                  match.teams.red > match.teams.blue ? "Red" : "Blue";
+                return (
+                  <tr
+                    key={index}
+                    onMouseEnter={() => setHoveredMatch(index)} // Set hovered match on mouse enter
+                    onMouseLeave={() => setHoveredMatch(null)} // Reset on mouse leave
+                    style={{
+                      backgroundColor:
+                        winningTeam === match.stats.team
+                          ? hoveredMatch === index
+                            ? "#32cd32" // Lighter green for hover if won
+                            : "#008000" // Green if won
+                          : hoveredMatch === index
+                          ? "#ffcccb" // Lighter red for hover if lost
+                          : "#ff0000", // Red if lost
+                    }}
+                  >
+                    <td
+                      style={{
+                        padding: "10px",
+                        borderBottom: "1px solid #ccc",
+                      }}
+                    >
+                      {match.meta?.map?.name || "Unknown"}
+                    </td>
+                    <td
+                      style={{
+                        padding: "10px",
+                        borderBottom: "1px solid #ccc",
+                      }}
+                    >
+                      {match.meta?.mode || "Unknown"}
+                    </td>
+                    <td
+                      style={{
+                        padding: "10px",
+                        borderBottom: "1px solid #ccc",
+                      }}
+                    >
+                      {match.stats?.kills || 0}
+                    </td>
+                    <td
+                      style={{
+                        padding: "10px",
+                        borderBottom: "1px solid #ccc",
+                      }}
+                    >
+                      {match.stats?.deaths || 0}
+                    </td>
+                    <td
+                      style={{
+                        padding: "10px",
+                        borderBottom: "1px solid #ccc",
+                      }}
+                    >
+                      {match.stats?.assists || 0}
+                    </td>
+                    <td
+                      style={{
+                        padding: "10px",
+                        borderBottom: "1px solid #ccc",
+                      }}
+                    >
+                      {(
+                        (match.stats?.kills + match.stats?.assists) /
+                        (match.stats?.deaths || 1)
+                      ).toFixed(2)}
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
