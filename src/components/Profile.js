@@ -9,6 +9,7 @@ function Profile() {
   const [puuid, setPuuid] = useState("");
   const [playerStats, setPlayerStats] = useState(null);
   const [matchHistory, setMatchHistory] = useState(null);
+  const [hoveredMatch, setHoveredMatch] = useState(null); // Track hovered match
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -77,43 +78,51 @@ function Profile() {
 
       <h3>Match History</h3>
       {matchHistory ? (
-        <div style={{ overflowX: "auto", maxHeight: "400px" }}>
-          <table
-            style={{
-              width: "100%",
-              marginTop: "20px",
-              borderCollapse: "collapse",
-              border: "1px solid #ccc",
-            }}
-          >
+        <div
+          style={{
+            maxHeight: "300px",
+            overflowY: "auto",
+            border: "1px solid #ccc",
+            borderRadius: "8px",
+            padding: "10px",
+            margin: "0 auto", 
+          }}
+        >
+          <table style={{ width: "100%", borderCollapse: "collapse" }}>
             <thead>
               <tr>
-                <th style={{ border: "1px solid #ccc", textAlign: "left", padding: "8px" }}>Map</th>
-                <th style={{ border: "1px solid #ccc", textAlign: "left", padding: "8px" }}>Mode</th>
-                <th style={{ border: "1px solid #ccc", textAlign: "left", padding: "8px" }}>Kills</th>
-                <th style={{ border: "1px solid #ccc", textAlign: "left", padding: "8px" }}>Deaths</th>
-                <th style={{ border: "1px solid #ccc", textAlign: "left", padding: "8px" }}>Assists</th>
-                <th style={{ border: "1px solid #ccc", textAlign: "left", padding: "8px" }}>KDA</th>
+                <th style={{ textAlign: "left", padding: "10px", borderBottom: "1px solid #ccc" }}>Map</th>
+                <th style={{ textAlign: "left", padding: "10px", borderBottom: "1px solid #ccc" }}>Mode</th>
+                <th style={{ textAlign: "left", padding: "10px", borderBottom: "1px solid #ccc" }}>Kills</th>
+                <th style={{ textAlign: "left", padding: "10px", borderBottom: "1px solid #ccc" }}>Deaths</th>
+                <th style={{ textAlign: "left", padding: "10px", borderBottom: "1px solid #ccc" }}>Assists</th>
+                <th style={{ textAlign: "left", padding: "10px", borderBottom: "1px solid #ccc" }}>KDA</th>
               </tr>
             </thead>
             <tbody>
-              {matchHistory.map((match, index) => {
-                const kills = match.stats.kills || 0;
-                const deaths = match.stats.deaths || 1; 
-                const assists = match.stats.assists || 0;
-                const kda = ((kills + assists) / deaths).toFixed(2); // Calculate KDA
-
-                return (
-                  <tr key={index}>
-                    <td style={{ padding: "8px", border: "1px solid #ccc" }}>{match.meta.map.name || "Unknown"}</td>
-                    <td style={{ padding: "8px", border: "1px solid #ccc" }}>{match.meta.mode || "Unknown"}</td>
-                    <td style={{ padding: "8px", border: "1px solid #ccc" }}>{kills}</td>
-                    <td style={{ padding: "8px", border: "1px solid #ccc" }}>{deaths}</td>
-                    <td style={{ padding: "8px", border: "1px solid #ccc" }}>{assists}</td>
-                    <td style={{ padding: "8px", border: "1px solid #ccc" }}>{kda}</td>
-                  </tr>
-                );
-              })}
+              {matchHistory.map((match, index) => (
+                <tr
+                  key={index}
+                  onMouseEnter={() => setHoveredMatch(index)} // Set hovered match on mouse enter
+                  onMouseLeave={() => setHoveredMatch(null)} // Reset on mouse leave
+                  style={{
+                    backgroundColor: hoveredMatch === index ? "#f0f8ff" : "transparent", // Highlight on hover
+                  }}
+                >
+                  <td style={{ padding: "10px", borderBottom: "1px solid #ccc" }}>
+                    {match.meta?.map?.name || "Unknown"}
+                  </td>
+                  <td style={{ padding: "10px", borderBottom: "1px solid #ccc" }}>
+                    {match.meta?.mode || "Unknown"}
+                  </td>
+                  <td style={{ padding: "10px", borderBottom: "1px solid #ccc" }}>{match.stats?.kills || 0}</td>
+                  <td style={{ padding: "10px", borderBottom: "1px solid #ccc" }}>{match.stats?.deaths || 0}</td>
+                  <td style={{ padding: "10px", borderBottom: "1px solid #ccc" }}>{match.stats?.assists || 0}</td>
+                  <td style={{ padding: "10px", borderBottom: "1px solid #ccc" }}>
+                    {((match.stats?.kills + match.stats?.assists) / (match.stats?.deaths || 1)).toFixed(2)}
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
