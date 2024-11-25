@@ -230,7 +230,7 @@ function Profile() {
         </div>
 
         {/* Line Graph */}
-        <div style={{ width: "48%", height: "300px", overflow: "hidden" }}>
+        <div style={{ width: "48%", maxWidth: "600px", height: "400px", overflow: "hidden" }}>
           <h3>MMR Change Over Matches</h3>
           <Line
             data={{
@@ -247,14 +247,14 @@ function Profile() {
             }}
             options={{
               responsive: true,
-              maintainAspectRatio: false,
+              maintainAspectRatio: true,
               scales: {
                 y: {
                   beginAtZero: true,
                 },
               },
             }}
-            style={{ height: "100%", width: "100%" }}
+            style={{ height: "90%", width: "100%" }}
           />
         </div>
       </div>
