@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { auth, db } from "../services/firebaseConfig";
 import { doc, getDoc } from "firebase/firestore";
 import axios from "axios";
+import { Line } from "react-chartjs-2";
+import Chart from "chart.js/auto";
 
 function Profile() {
   const [riotUsername, setRiotUsername] = useState("");
@@ -13,6 +15,8 @@ function Profile() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [rank, setRank] = useState(null);
+  const [mmrLabels, setMmrLabels] = useState([]);
+  const [mmrValues, setMmrValues] = useState([]);
 
   useEffect(() => {
     const fetchProfileData = async () => {
@@ -52,8 +56,8 @@ function Profile() {
               }
             );
 
-            const mmrResponse = await axios.get(
-              "http://localhost:5001/api/rank",
+            const mmrHistoryResponse = await axios.get(
+              "http://localhost:5001/api/mmr-history",
               {
                 params: {
                   region: data.region,
@@ -62,9 +66,21 @@ function Profile() {
                 },
               }
             );
+
+            // Extract MMR data for the last 10 games
+            const mmrHistory = mmrHistoryResponse.data.data || [];
+            const limitedMmrHistory = mmrHistory.slice(0, 10); // Limit to 10 games
+
+            setMmrLabels(
+              limitedMmrHistory.map((entry, index) => `Game ${index + 1}`)
+            );
+            setMmrValues(
+              limitedMmrHistory.map((entry) => entry.mmr_change_to_last_game || 0)
+            );
+
             setPlayerStats(data);
             setMatchHistory(matchHistoryResponse.data.data); // Assuming match data is in `.data`
-            setRank(mmrResponse.data.data);
+            setRank(mmrHistoryResponse.data);
           } else {
             throw new Error("User data does not exist in Firestore.");
           }
@@ -107,7 +123,7 @@ function Profile() {
       </p>
       <p>
         <strong>Current Rank:</strong>
-        {rank?.current_data?.currenttierpatched || "Unranked"}
+        {rank?.currenttierpatched || "Unranked"}
       </p>
       <p>
         <strong>Highest Rank:</strong>
@@ -122,157 +138,112 @@ function Profile() {
         />
       )}
 
-      <h3>Match History</h3>
-      {matchHistory ? (
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
+        {/* Match History */}
         <div
           style={{
-            maxHeight: "300px",
+            maxHeight: "280px",
             overflowY: "auto",
             border: "1px solid #ccc",
             borderRadius: "8px",
             padding: "10px",
             margin: "0 auto",
+            width: "48%",
           }}
         >
-          <table style={{ width: "100%", borderCollapse: "collapse" }}>
-            <thead>
-              <tr>
-                <th
-                  style={{
-                    textAlign: "left",
-                    padding: "10px",
-                    borderBottom: "1px solid #ccc",
-                  }}
-                >
-                  Map
-                </th>
-                <th
-                  style={{
-                    textAlign: "left",
-                    padding: "10px",
-                    borderBottom: "1px solid #ccc",
-                  }}
-                >
-                  Mode
-                </th>
-                <th
-                  style={{
-                    textAlign: "left",
-                    padding: "10px",
-                    borderBottom: "1px solid #ccc",
-                  }}
-                >
-                  Kills
-                </th>
-                <th
-                  style={{
-                    textAlign: "left",
-                    padding: "10px",
-                    borderBottom: "1px solid #ccc",
-                  }}
-                >
-                  Deaths
-                </th>
-                <th
-                  style={{
-                    textAlign: "left",
-                    padding: "10px",
-                    borderBottom: "1px solid #ccc",
-                  }}
-                >
-                  Assists
-                </th>
-                <th
-                  style={{
-                    textAlign: "left",
-                    padding: "10px",
-                    borderBottom: "1px solid #ccc",
-                  }}
-                >
-                  KDA
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {matchHistory.map((match, index) => {
-                const winningTeam =
-                  match.teams.red > match.teams.blue ? "Red" : "Blue";
-                return (
-                  <tr
-                    key={index}
-                    onMouseEnter={() => setHoveredMatch(index)} // Set hovered match on mouse enter
-                    onMouseLeave={() => setHoveredMatch(null)} // Reset on mouse leave
-                    style={{
-                      backgroundColor:
-                        winningTeam === match.stats.team
-                          ? hoveredMatch === index
-                            ? "#32cd32" // Lighter green for hover if won
-                            : "#008000" // Green if won
-                          : hoveredMatch === index
-                          ? "#ffcccb" // Lighter red for hover if lost
-                          : "#ff0000", // Red if lost
-                    }}
-                  >
-                    <td
+          <h3>Match History</h3>
+          {matchHistory ? (
+            <table style={{ width: "100%", borderCollapse: "collapse" }}>
+              <thead>
+                <tr>
+                  <th style={{ textAlign: "left", padding: "10px" }}>Map</th>
+                  <th style={{ textAlign: "left", padding: "10px" }}>Mode</th>
+                  <th style={{ textAlign: "left", padding: "10px" }}>Kills</th>
+                  <th style={{ textAlign: "left", padding: "10px" }}>Deaths</th>
+                  <th style={{ textAlign: "left", padding: "10px" }}>Assists</th>
+                  <th style={{ textAlign: "left", padding: "10px" }}>KDA</th>
+                </tr>
+              </thead>
+              <tbody>
+                {matchHistory.map((match, index) => {
+                  const winningTeam =
+                    match.teams.red > match.teams.blue ? "Red" : "Blue";
+                  return (
+                    <tr
+                      key={index}
+                      onMouseEnter={() => setHoveredMatch(index)} // Set hovered match on mouse enter
+                      onMouseLeave={() => setHoveredMatch(null)} // Reset on mouse leave
                       style={{
-                        padding: "10px",
-                        borderBottom: "1px solid #ccc",
+                        backgroundColor:
+                          winningTeam === match.stats.team
+                            ? hoveredMatch === index
+                              ? "#32cd32" // Lighter green for hover if won
+                              : "#008000" // Green if won
+                            : hoveredMatch === index
+                            ? "#ffcccb" // Lighter red for hover if lost
+                            : "#ff0000", // Red if lost
                       }}
                     >
-                      {match.meta?.map?.name || "Unknown"}
-                    </td>
-                    <td
-                      style={{
-                        padding: "10px",
-                        borderBottom: "1px solid #ccc",
-                      }}
-                    >
-                      {match.meta?.mode || "Unknown"}
-                    </td>
-                    <td
-                      style={{
-                        padding: "10px",
-                        borderBottom: "1px solid #ccc",
-                      }}
-                    >
-                      {match.stats?.kills || 0}
-                    </td>
-                    <td
-                      style={{
-                        padding: "10px",
-                        borderBottom: "1px solid #ccc",
-                      }}
-                    >
-                      {match.stats?.deaths || 0}
-                    </td>
-                    <td
-                      style={{
-                        padding: "10px",
-                        borderBottom: "1px solid #ccc",
-                      }}
-                    >
-                      {match.stats?.assists || 0}
-                    </td>
-                    <td
-                      style={{
-                        padding: "10px",
-                        borderBottom: "1px solid #ccc",
-                      }}
-                    >
-                      {(
-                        (match.stats?.kills + match.stats?.assists) /
-                        (match.stats?.deaths || 1)
-                      ).toFixed(2)}
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+                      <td style={{ padding: "10px" }}>
+                        {match.meta?.map?.name || "Unknown"}
+                      </td>
+                      <td style={{ padding: "10px" }}>
+                        {match.meta?.mode || "Unknown"}
+                      </td>
+                      <td style={{ padding: "10px" }}>
+                        {match.stats?.kills || 0}
+                      </td>
+                      <td style={{ padding: "10px" }}>
+                        {match.stats?.deaths || 0}
+                      </td>
+                      <td style={{ padding: "10px" }}>
+                        {match.stats?.assists || 0}
+                      </td>
+                      <td style={{ padding: "10px" }}>
+                        {(
+                          (match.stats?.kills + match.stats?.assists) /
+                          (match.stats?.deaths || 1)
+                        ).toFixed(2)}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          ) : (
+            <p>No match history available.</p>
+          )}
         </div>
-      ) : (
-        <p>No match history available.</p>
-      )}
+
+        {/* Line Graph */}
+        <div style={{ width: "48%", height: "300px", overflow: "hidden" }}>
+          <h3>MMR Change Over Matches</h3>
+          <Line
+            data={{
+              labels: mmrLabels,
+              datasets: [
+                {
+                  label: "MMR Change",
+                  data: mmrValues,
+                  borderColor: "blue",
+                  backgroundColor: "rgba(0, 0, 255, 0.1)",
+                  borderWidth: 2,
+                },
+              ],
+            }}
+            options={{
+              responsive: true,
+              maintainAspectRatio: false,
+              scales: {
+                y: {
+                  beginAtZero: true,
+                },
+              },
+            }}
+            style={{ height: "100%", width: "100%" }}
+          />
+        </div>
+      </div>
     </div>
   );
 }
