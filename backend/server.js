@@ -7,7 +7,7 @@ const app = express();
 const PORT = 5001; // Choose any available port
 
 // Riot and Henrik API keys
-const RIOT_API_KEY = "RGAPI-b7a746d8-5c76-4bbe-9a37-3543ed7e89d2";
+const RIOT_API_KEY = "RGAPI-e8600337-e5ec-4db7-b8f0-8bddbb64687a";
 const HENRIK_API_KEY = process.env.HENRIK_API_KEY;
 
 app.use(cors());
@@ -103,6 +103,7 @@ app.get("/api/match-history", async (req, res) => {
   }
 });
 
+// Henrik Dev API: Fetch MMR data (Rank and Rating)
 app.get("/api/rank", async (req, res) => {
   const { region, username, tagline } = req.query;
 
@@ -121,14 +122,45 @@ app.get("/api/rank", async (req, res) => {
         },
       }
     );
-    res.json(response.data); // Return match history data to the frontend
+    res.json(response.data);
   } catch (error) {
     console.error(
-      "Error fetching MMR Data from Henrik API:",
+      "Error fetching MMR data from Henrik API:",
       error.response?.data || error.message
     );
     res.status(error.response?.status || 500).json({
       error: error.response?.data || "Failed to fetch MMR data.",
+    });
+  }
+});
+
+// Henrik Dev API: Fetch MMR history
+app.get("/api/mmr-history", async (req, res) => {
+  const { region, username, tagline } = req.query;
+
+  if (!region || !username || !tagline) {
+    return res.status(400).json({
+      error: "Missing region, username, or tagline in query parameters.",
+    });
+  }
+
+  try {
+    const response = await axios.get(
+      `https://api.henrikdev.xyz/valorant/v1/mmr-history/${region}/${username}/${tagline}`,
+      {
+        headers: {
+          Authorization: HENRIK_API_KEY,
+        },
+      }
+    );
+    res.json(response.data); // Return MMR history to the frontend
+  } catch (error) {
+    console.error(
+      "Error fetching MMR history from Henrik API:",
+      error.response?.data || error.message
+    );
+    res.status(error.response?.status || 500).json({
+      error: error.response?.data || "Failed to fetch MMR history.",
     });
   }
 });
