@@ -78,9 +78,21 @@ function Profile() {
               limitedMmrHistory.map((entry) => entry.mmr_change_to_last_game || 0)
             );
 
+            // Fetch rank
+            const rankResponse = await axios.get(
+              "http://localhost:5001/api/rank",
+              {
+                params: {
+                  region: data.region,
+                  username: riotUsername,
+                  tagline: riotTagline,
+                },
+              }
+            );
+
             setPlayerStats(data);
             setMatchHistory(matchHistoryResponse.data.data); // Assuming match data is in `.data`
-            setRank(mmrHistoryResponse.data);
+            setRank(rankResponse.data);
           } else {
             throw new Error("User data does not exist in Firestore.");
           }
@@ -106,6 +118,8 @@ function Profile() {
       </p>
     );
 
+  console.log("Rank Data:", rank); // Debugging to ensure correct rank data
+
   return (
     <div style={{ padding: "20px" }}>
       <h2>
@@ -122,12 +136,12 @@ function Profile() {
         <strong>PUUID:</strong> {puuid}
       </p>
       <p>
-        <strong>Current Rank:</strong>
-        {rank?.currenttierpatched || "Unranked"}
+        <strong>Current Rank:</strong>{" "}
+        {rank?.data?.current_data?.currenttierpatched || "Unranked"}
       </p>
       <p>
-        <strong>Highest Rank:</strong>
-        {rank?.highest_rank?.patched_tier || "Unranked"}
+        <strong>Highest Rank:</strong>{" "}
+        {rank?.data?.highest_rank?.patched_tier || "Unknown"}
       </p>
       <h3>Player Card</h3>
       {playerStats?.card?.small && (
