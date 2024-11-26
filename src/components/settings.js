@@ -3,7 +3,6 @@ import { auth, db } from '../services/firebaseConfig';
 import { signOut, updatePassword, reauthenticateWithCredential, EmailAuthProvider } from 'firebase/auth';
 import { doc, getDoc, setDoc, deleteDoc } from 'firebase/firestore';
 import './Settings.css';
-
 const Settings = () => {
   const [email, setEmail] = useState('');
   const [riotUsername, setRiotUsername] = useState('');
@@ -14,7 +13,6 @@ const Settings = () => {
   const [showModal, setShowModal] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false); // State for confirm delete modal
   const user = auth.currentUser;
-
   useEffect(() => {
     const fetchUserData = async () => {
       if (user) {
@@ -29,7 +27,6 @@ const Settings = () => {
     };
     fetchUserData();
   }, [user]);
-
   const handleLogout = async () => {
     try {
       await signOut(auth);
@@ -38,15 +35,12 @@ const Settings = () => {
       setError('Error logging out.');
     }
   };
-
   const handlePasswordChange = async () => {
     if (!oldPassword || !newPassword) {
       setError('Please enter both old and new passwords.');
       return;
     }
-
     const credential = EmailAuthProvider.credential(user.email, oldPassword);
-
     try {
       await reauthenticateWithCredential(user, credential);
       await updatePassword(user, newPassword);
@@ -59,7 +53,6 @@ const Settings = () => {
       setError('Error updating password or invalid credentials.');
     }
   };
-
   const handleDataDelete = async () => {
     try {
       const userDoc = doc(db, 'users', user.uid);
@@ -70,7 +63,6 @@ const Settings = () => {
       setError('Error deleting data.');
     }
   };
-
   const handleRiotUsernameChange = async () => {
     if (riotUsername) {
       const userDoc = doc(db, 'users', user.uid);
@@ -78,7 +70,6 @@ const Settings = () => {
       alert('Riot username updated successfully!');
     }
   };
-
   const handleRiotTaglineChange = async () => {
     if (riotTagline) {
       const userDoc = doc(db, 'users', user.uid);
@@ -86,7 +77,6 @@ const Settings = () => {
       alert('Riot tagline updated successfully!');
     }
   };
-
   if (!user) {
     return (
       <div style={{ textAlign: 'center' }} className="settings-container">
@@ -100,11 +90,9 @@ const Settings = () => {
       
     );
   }
-
   return (
     <div className="settings-container">
       <h1>Settings</h1>
-
       <div className="settings-sections">
         {/* Account Settings */}
         <div className="settings-box">
@@ -116,7 +104,6 @@ const Settings = () => {
             Delete Account Data
           </button>
         </div>
-
         {/* Privacy & Security */}
         <div className="settings-box">
           <h3>Privacy & Security</h3>
@@ -144,12 +131,10 @@ const Settings = () => {
           </div>
         </div>
       </div>
-
       <div style={{ textAlign: 'center' }} className="section">
         <h3>Contact</h3>
         <p>If you need support, reach out to: support@valoranttracker.com</p>
       </div>
-
       {/* Modal for password change */}
       {showModal && (
         <div className="modal">
@@ -175,7 +160,6 @@ const Settings = () => {
           </div>
         </div>
       )}
-
       {/* Confirmation Modal for Data Deletion */}
       {showConfirmModal && (
         <div className="modal">
@@ -197,5 +181,4 @@ const Settings = () => {
     </div>
   );
 };
-
 export default Settings;
