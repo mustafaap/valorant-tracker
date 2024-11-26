@@ -7,10 +7,11 @@ const app = express();
 const PORT = 5001; // Choose any available port
 
 // Riot and Henrik API keys
-const RIOT_API_KEY = "RGAPI-4b25c2a1-5065-485e-982f-bed121189504";
-const HENRIK_API_KEY = process.env.HENRIK_API_KEY;
+const RIOT_API_KEY = "RGAPI-ddcc30f9-0121-4012-8ac3-218263998e48";
+const HENRIK_API_KEY = "HDEV-50155a63-7079-437c-8ef2-804da79cb850";
 
 app.use(cors());
+app.use(express.json());
 
 // Riot API: Leaderboard endpoint
 app.get("/leaderboard", async (req, res) => {
@@ -164,6 +165,140 @@ app.get("/api/mmr-history", async (req, res) => {
     });
   }
 });
+
+// Henrik Dev API: Account Search endpoint
+app.get("/api/account-search", async (req, res) => {
+  const { name, tag } = req.query;
+
+  if (!name || !tag) {
+    return res.status(400).json({ error: "Missing name or tag in query parameters." });
+  }
+
+  try {
+    const response = await axios.get(
+      `https://api.henrikdev.xyz/valorant/v1/account/${(name)}/${(tag)}`,
+      {
+        headers: {
+          Authorization: HENRIK_API_KEY,
+        },
+      }
+    );
+    res.json(response.data); // Send the response data back to the frontend
+  } catch (error) {
+    console.error(
+      "Error fetching account data from Henrik API:",
+      error.response?.data || error.message
+    );
+    res.status(error.response?.status || 500).json({
+      error: error.response?.data || "Failed to fetch account data.",
+    });
+  }
+});
+
+
+app.get("/api/esports-schedule", async (req, res) => {
+  const { query } = req.query; // Accept a 'query' parameter
+
+  try {
+    const response = await axios.get(`https://api.henrikdev.xyz/valorant/v1/esports/schedule`, {
+      headers: {
+        Authorization: HENRIK_API_KEY,
+      },
+    });
+
+    let data = response.data.data;
+
+    // If a query is provided, filter the data
+    if (query) {
+      const lowerCaseQuery = query.toLowerCase();
+      data = data.filter(item => {
+        const teamMatch = item.match?.teams?.some(team => team.name.toLowerCase().includes(lowerCaseQuery));
+        const leagueMatch = item.league.name.toLowerCase().includes(lowerCaseQuery);
+        return teamMatch || leagueMatch;
+      });
+    }
+
+    res.json({ data });
+  } catch (error) {
+    console.error(
+      "Error fetching esports schedule from Henrik API:",
+      error.response?.data || error.message
+    );
+    res.status(error.response?.status || 500).json({
+      error: error.response?.data || "Failed to fetch esports schedule.",
+    });
+  }
+});
+
+app.get("/api/match-details", async (req, res) => {
+  const { matchId } = req.query;
+
+  if (!matchId) {
+    return res.status(400).json({
+      error: "Missing matchId in query parameters.",
+    });
+  }
+
+  try {
+    const response = await axios.post(
+      `https://api.henrikdev.xyz/valorant/v1/raw`,
+      {
+        type: "matchdetails",
+        value: matchId,
+        region: "na", // Adjust as needed
+      },
+      {
+        headers: {
+          Authorization: HENRIK_API_KEY,
+        },
+      }
+    );
+
+    res.json(response.data); // Return match details to the frontend
+  } catch (error) {
+    console.error(
+      "Error fetching match details from Henrik API:",
+      error.response?.data || error.message
+    );
+    res.status(error.response?.status || 500).json({
+      error: error.response?.data || "Failed to fetch match details.",
+    });
+  }
+});
+
+
+app.post("/api/player-loadout", async (req, res) => {
+  const { puuid, shard } = req.body;
+
+  if (!puuid || !shard) {
+    return res.status(400).json({ error: "Missing puuid or shard in request body." });
+  }
+
+  try {
+    const response = await axios.post(
+      "https://api.henrikdev.xyz/valorant/v1/raw",
+      {
+        type: "playerloadout",
+        value: puuid,
+        region: shard,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${HENRIK_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    res.json(response.data);
+  } catch (error) {
+    console.error("Error fetching player loadout:", error.response?.data || error.message);
+    res.status(500).json({ error: "Failed to fetch player loadout." });
+  }
+});
+
+
+
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);

@@ -3,7 +3,17 @@ import { auth, db } from "../services/firebaseConfig";
 import { doc, getDoc } from "firebase/firestore";
 import axios from "axios";
 import { Line } from "react-chartjs-2";
+import { Chart as ChartJS, LineElement, CategoryScale, LinearScale, PointElement, Tooltip, Legend } from 'chart.js';
 import './Profile.css';
+ChartJS.register(
+  LineElement,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  Tooltip,
+  Legend
+);
+
 
 function Profile() {
   const [riotUsername, setRiotUsername] = useState("");
