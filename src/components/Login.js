@@ -17,22 +17,22 @@ function Login({ onLoginSuccess }) {
   };
 
   return (
-    <div>
+    <div className="auth-form">
       <h2>Login</h2>
-      <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+      <div>
         <input
           type="email"
           placeholder="Email"
           onChange={(e) => setEmail(e.target.value)}
-          style={{ marginBottom: "10px", width: "100%" }}
         />
         <input
           type="password"
           placeholder="Password"
           onChange={(e) => setPassword(e.target.value)}
-          style={{ marginBottom: "10px", width: "100%" }}
         />
-        <button onClick={handleLogin} style={{ width: "100%" }}>Login</button>
+        <button className="auth-button" onClick={handleLogin}>
+          Login
+        </button>
       </div>
     </div>
   );

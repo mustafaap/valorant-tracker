@@ -5,15 +5,15 @@ function Leaderboard() {
   const [leaderboard, setLeaderboard] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [hoveredPlayer, setHoveredPlayer] = useState(null); // New state to track hovered player
+  const [hoveredPlayer, setHoveredPlayer] = useState(null);
 
-  const currentActId = "dcde7346-4085-de4f-c463-2489ed47983b"; // Replace with the actual Act ID
+  const currentActId = "dcde7346-4085-de4f-c463-2489ed47983b";
 
   useEffect(() => {
     const fetchLeaderboard = async () => {
       try {
         const data = await getLeaderboard(currentActId);
-        setLeaderboard(data.players); // Assuming the API response has a `players` field
+        setLeaderboard(data.players);
       } catch (err) {
         setError("Failed to load leaderboard. Please try again.");
       } finally {
@@ -25,80 +25,51 @@ function Leaderboard() {
   }, [currentActId]);
 
   if (loading) {
-    return <p>Loading...</p>;
+    return (
+      <div className="loading-container">
+        <div className="loading-spinner"></div>
+        <p className="loading-text">Loading Leaderboard...</p>
+      </div>
+    );
   }
 
   if (error) {
-    return <p style={{ color: "red" }}>{error}</p>;
+    return (
+      <div className="error-message">
+        <p>{error}</p>
+      </div>
+    );
   }
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h2>Top 100 Players</h2>
-      <div
-        style={{
-          maxHeight: "700px",
-          overflowY: "auto",
-          border: "1px solid #ccc",
-          borderRadius: "8px",
-          padding: "10px",
-        }}
-      >
-        <table style={{ width: "100%", borderCollapse: "collapse" }}>
+    <div className="leaderboard-container">
+      <h2 className="leaderboard-title">TOP 100 VALORANT PLAYERS</h2>
+      <div className="table-container">
+        <table className="leaderboard-table">
           <thead>
             <tr>
-              <th style={{ textAlign: "left", padding: "10px", borderBottom: "1px solid #ccc" }}>Rank</th>
-              <th style={{ textAlign: "left", padding: "10px", borderBottom: "1px solid #ccc" }}>Player Name</th>
-              <th style={{ textAlign: "left", padding: "10px", borderBottom: "1px solid #ccc" }}>Ranked Rating</th>
-              <th style={{ textAlign: "left", padding: "10px", borderBottom: "1px solid #ccc" }}>Wins</th>
+              <th>RANK</th>
+              <th>PLAYER</th>
+              <th>RATING</th>
+              <th>WINS</th>
             </tr>
           </thead>
           <tbody>
             {leaderboard.map((player, index) => (
               <tr
                 key={player.puuid}
-                onMouseEnter={() => setHoveredPlayer(player.puuid)} // Set hovered player on mouse enter
-                onMouseLeave={() => setHoveredPlayer(null)} // Reset on mouse leave
-                style={{
-                  backgroundColor: hoveredPlayer === player.puuid ? "#f0f8ff" : "transparent", // Highlight on hover
-                }}
+                onMouseEnter={() => setHoveredPlayer(player.puuid)}
+                onMouseLeave={() => setHoveredPlayer(null)}
+                className={hoveredPlayer === player.puuid ? "row-hovered" : ""}
               >
-                <td
-                  style={{
-                    padding: "10px",
-                    borderBottom: "1px solid #ccc",
-                    color: hoveredPlayer === player.puuid ? "green" : "white", // Change text color to green on hover
-                  }}
-                >
-                  {index + 1}
+                <td className="rank-cell">
+                  <span className="rank-number">{index + 1}</span>
                 </td>
-                <td
-                  style={{
-                    padding: "10px",
-                    borderBottom: "1px solid #ccc",
-                    color: hoveredPlayer === player.puuid ? "green" : "white", // Change text color to green on hover
-                  }}
-                >
+                <td className="player-cell">
                   {player.gameName || "Anonymous"}#{player.tagLine || ""}
                 </td>
-                <td
-                  style={{
-                    padding: "10px",
-                    borderBottom: "1px solid #ccc",
-                    color: hoveredPlayer === player.puuid ? "green" : "white", // Change text color to green on hover
-                  }}
-                >
-                  {player.rankedRating}
-                </td>
-                <td
-                  style={{
-                    padding: "10px",
-                    borderBottom: "1px solid #ccc",
-                    color: hoveredPlayer === player.puuid ? "green" : "white", // Change text color to green on hover
-                  }}
-                >
-                  {player.numberOfWins}
-                </td>
+                <td className="rating-cell">{player.rankedRating}</td>
+                <td className="wins-cell">{player.numberOfWins}</td>
               </tr>
             ))}
           </tbody>

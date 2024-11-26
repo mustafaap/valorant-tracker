@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, NavLink } from "react-router-dom";
 import HomePage from "./components/HomePage";
 import Profile from "./components/Profile";
 import Leaderboard from "./components/Leaderboard";
@@ -11,69 +11,76 @@ import './App.css';
 function App() {
   return (
     <Router>
-      <Routes>
-        {/* Routes without sidebar */}
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
+      <div className="app-layout">
+        <Routes>
+          {/* Routes without sidebar */}
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
 
-        {/* Routes with sidebar */}
-        <Route
-          path="/"
-          element={
-            <div className="app-container">
-              <Sidebar />
-              <div className="content">
-                <HomePage />
-              </div>
-            </div>
-          }
-        />
-        <Route
-          path="/profile"
-          element={
-            <div className="app-container">
-              <Sidebar />
-              <div className="content">
-                <Profile />
-              </div>
-            </div>
-          }
-        />
-        <Route
-          path="/maps"
-          element={
-            <div className="app-container">
-              <Sidebar />
-              <div className="content">
-                <Maps />
-              </div>
-            </div>
-          }
-        />
-        <Route
-          path="/leaderboard"
-          element={
-            <div className="app-container">
-              <Sidebar />
-              <div className="content">
-                <Leaderboard />
-              </div>
-            </div>
-          }
-        />
-      </Routes>
+          {/* Routes with sidebar */}
+          <Route
+            path="/*"
+            element={
+              <>
+                <Navigation />
+                <main className="main-content">
+                  <Routes>
+                    <Route path="/" element={<HomePage />} />
+                    <Route path="/profile" element={<Profile />} />
+                    <Route path="/maps" element={<Maps />} />
+                    <Route path="/leaderboard" element={<Leaderboard />} />
+                  </Routes>
+                </main>
+              </>
+            }
+          />
+        </Routes>
+      </div>
     </Router>
   );
 }
 
-function Sidebar() {
+function Navigation() {
   return (
-    <div className="sidebar">
-      <Link to="/" className="tab">Home</Link>
-      <Link to="/profile" className="tab">Profile</Link>
-      <Link to="/maps" className="tab">Maps</Link>
-      <Link to="/leaderboard" className="tab">Leaderboard</Link>
-    </div>
+    <nav className="nav-sidebar">
+      <div className="nav-logo">
+        <img src="/valorant-seeklogo-2.svg" alt="Valorant Logo" className="nav-logo-img shine-effect" />      </div>
+      <div className="nav-links">
+        <NavLink 
+          to="/" 
+          className={({ isActive }) => 
+            `nav-item ${isActive ? 'nav-item-active' : ''}`
+          }
+          end
+        >
+          HOME
+        </NavLink>
+        <NavLink 
+          to="/profile" 
+          className={({ isActive }) => 
+            `nav-item ${isActive ? 'nav-item-active' : ''}`
+          }
+        >
+          PROFILE
+        </NavLink>
+        <NavLink 
+          to="/maps" 
+          className={({ isActive }) => 
+            `nav-item ${isActive ? 'nav-item-active' : ''}`
+          }
+        >
+          MAPS
+        </NavLink>
+        <NavLink 
+          to="/leaderboard" 
+          className={({ isActive }) => 
+            `nav-item ${isActive ? 'nav-item-active' : ''}`
+          }
+        >
+          LEADERBOARD
+        </NavLink>
+      </div>
+    </nav>
   );
 }
 

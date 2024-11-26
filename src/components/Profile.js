@@ -120,6 +120,38 @@ function Profile() {
 
   console.log("Rank Data:", rank); // Debugging to ensure correct rank data
 
+  const data = {
+    labels: mmrLabels,
+    datasets: [
+      {
+        label: "MMR Change",
+        data: mmrValues,
+        borderColor: "blue",
+        backgroundColor: "rgba(0, 0, 255, 0.1)",
+        borderWidth: 2,
+        pointHoverRadius: 5,
+        pointHoverBackgroundColor: "red",
+      },
+    ],
+  };
+
+  const options = {
+    responsive: true,
+    maintainAspectRatio: true,
+    scales: {
+      y: {
+        beginAtZero: true,
+      },
+    },
+    plugins: {
+      tooltip: {
+        enabled: true,
+        mode: 'index',
+        intersect: false,
+      },
+    },
+  };
+
   return (
     <div style={{ padding: "20px" }}>
       <h2>
@@ -232,30 +264,7 @@ function Profile() {
         {/* Line Graph */}
         <div style={{ width: "48%", maxWidth: "600px", height: "400px", overflow: "hidden" }}>
           <h3>MMR Change Over Matches</h3>
-          <Line
-            data={{
-              labels: mmrLabels,
-              datasets: [
-                {
-                  label: "MMR Change",
-                  data: mmrValues,
-                  borderColor: "blue",
-                  backgroundColor: "rgba(0, 0, 255, 0.1)",
-                  borderWidth: 2,
-                },
-              ],
-            }}
-            options={{
-              responsive: true,
-              maintainAspectRatio: true,
-              scales: {
-                y: {
-                  beginAtZero: true,
-                },
-              },
-            }}
-            style={{ height: "90%", width: "100%" }}
-          />
+          <Line data={data} options={options} />
         </div>
       </div>
     </div>
