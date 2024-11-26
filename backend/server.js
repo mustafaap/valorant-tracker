@@ -7,7 +7,7 @@ const app = express();
 const PORT = 5001; // Choose any available port
 
 // Riot and Henrik API keys
-const RIOT_API_KEY = "RGAPI-4b25c2a1-5065-485e-982f-bed121189504";
+const RIOT_API_KEY = "RGAPI-ddcc30f9-0121-4012-8ac3-218263998e48";
 const HENRIK_API_KEY = process.env.HENRIK_API_KEY;
 
 app.use(cors());
