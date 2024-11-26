@@ -5,7 +5,6 @@ import Profile from "./components/Profile";
 import Leaderboard from "./components/Leaderboard";
 import Maps from "./components/Maps";
 import Login from "./components/Login";
-import Settings from "./components/Settings";
 import Signup from "./components/Signup";
 import Settings from "./components/Settings";
 import './App.css';

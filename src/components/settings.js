@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { auth, db } from '../services/firebaseConfig';
 import { signOut, updatePassword, reauthenticateWithCredential, EmailAuthProvider } from 'firebase/auth';
 import { doc, getDoc, setDoc, deleteDoc } from 'firebase/firestore';
-import './settings.css';
+import './Settings.css';
 
 const Settings = () => {
   const [email, setEmail] = useState('');
