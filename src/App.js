@@ -5,6 +5,7 @@ import Profile from "./components/Profile";
 import Leaderboard from "./components/Leaderboard";
 import Maps from "./components/Maps";
 import Login from "./components/Login";
+import Settings from "./components/Settings";
 import Signup from "./components/Signup";
 import './App.css';
 
@@ -29,6 +30,7 @@ function App() {
                     <Route path="/profile" element={<Profile />} />
                     <Route path="/maps" element={<Maps />} />
                     <Route path="/leaderboard" element={<Leaderboard />} />
+                    <Route path="/settings" element={<Settings />} />
                   </Routes>
                 </main>
               </>
@@ -44,7 +46,8 @@ function Navigation() {
   return (
     <nav className="nav-sidebar">
       <div className="nav-logo">
-        <img src="/valorant-seeklogo-2.svg" alt="Valorant Logo" className="nav-logo-img shine-effect" />      </div>
+        <img src="/valorant-seeklogo-2.svg" alt="Valorant Logo" className="nav-logo-img shine-effect" />
+      </div>
       <div className="nav-links">
         <NavLink 
           to="/" 
@@ -78,6 +81,14 @@ function Navigation() {
           }
         >
           LEADERBOARD
+        </NavLink>
+        <NavLink 
+          to="/settings" 
+          className={({ isActive }) => 
+            `nav-item ${isActive ? 'nav-item-active' : ''}`
+          }
+        >
+          SETTINGS
         </NavLink>
       </div>
     </nav>
