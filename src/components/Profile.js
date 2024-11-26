@@ -3,7 +3,7 @@ import { auth, db } from "../services/firebaseConfig";
 import { doc, getDoc } from "firebase/firestore";
 import axios from "axios";
 import { Line } from "react-chartjs-2";
-import Chart from "chart.js/auto";
+import './Profile.css';
 
 function Profile() {
   const [riotUsername, setRiotUsername] = useState("");
@@ -11,7 +11,6 @@ function Profile() {
   const [puuid, setPuuid] = useState("");
   const [playerStats, setPlayerStats] = useState(null);
   const [matchHistory, setMatchHistory] = useState(null);
-  const [hoveredMatch, setHoveredMatch] = useState(null); // Track hovered match
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [rank, setRank] = useState(null);
@@ -110,13 +109,23 @@ function Profile() {
     fetchProfileData();
   }, []);
 
-  if (loading) return <p>Loading...</p>;
-  if (error)
+  if (loading) {
     return (
-      <p style={{ color: "red" }}>
-        {typeof error === "string" ? error : "An error occurred."}
-      </p>
+      <div className="loading-container">
+        <div className="loading-spinner"></div>
+        <p className="loading-text">Loading Profile...</p>
+      </div>
     );
+  }
+
+  if (error) {
+    return (
+      <div className="error-container">
+        <h2>Error Loading Profile</h2>
+        <p>{typeof error === "string" ? error : "An error occurred."}</p>
+      </div>
+    );
+  }
 
   console.log("Rank Data:", rank); // Debugging to ensure correct rank data
 
@@ -153,122 +162,112 @@ function Profile() {
   };
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h2>
-        Welcome, {riotUsername}#{riotTagline}!
-      </h2>
-      <h3>Basic Information</h3>
-      <p>
-        <strong>Game Name:</strong> {riotUsername}#{riotTagline}
-      </p>
-      <p>
-        <strong>Region:</strong> {playerStats?.region?.toUpperCase() || "N/A"}
-      </p>
-      <p>
-        <strong>PUUID:</strong> {puuid}
-      </p>
-      <p>
-        <strong>Current Rank:</strong>{" "}
-        {rank?.data?.current_data?.currenttierpatched || "Unranked"}
-      </p>
-      <p>
-        <strong>Highest Rank:</strong>{" "}
-        {rank?.data?.highest_rank?.patched_tier || "Unknown"}
-      </p>
-      <h3>Player Card</h3>
-      {playerStats?.card?.small && (
-        <img
-          src={playerStats.card.small}
-          alt="Player Card"
-          style={{ width: "150px", height: "auto" }}
-        />
-      )}
-
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
-        {/* Match History */}
-        <div
-          style={{
-            maxHeight: "280px",
-            overflowY: "auto",
-            border: "1px solid #ccc",
-            borderRadius: "8px",
-            padding: "10px",
-            margin: "0 auto",
-            width: "48%",
-          }}
-        >
-          <h3>Match History</h3>
-          {matchHistory ? (
-            <table style={{ width: "100%", borderCollapse: "collapse" }}>
-              <thead>
-                <tr>
-                  <th style={{ textAlign: "left", padding: "10px" }}>Map</th>
-                  <th style={{ textAlign: "left", padding: "10px" }}>Mode</th>
-                  <th style={{ textAlign: "left", padding: "10px" }}>Kills</th>
-                  <th style={{ textAlign: "left", padding: "10px" }}>Deaths</th>
-                  <th style={{ textAlign: "left", padding: "10px" }}>Assists</th>
-                  <th style={{ textAlign: "left", padding: "10px" }}>KDA</th>
-                </tr>
-              </thead>
-              <tbody>
-                {matchHistory.map((match, index) => {
-                  const winningTeam =
-                    match.teams.red > match.teams.blue ? "Red" : "Blue";
-                  return (
-                    <tr
-                      key={index}
-                      onMouseEnter={() => setHoveredMatch(index)} // Set hovered match on mouse enter
-                      onMouseLeave={() => setHoveredMatch(null)} // Reset on mouse leave
-                      style={{
-                        backgroundColor:
-                          winningTeam === match.stats.team
-                            ? hoveredMatch === index
-                              ? "#32cd32" // Lighter green for hover if won
-                              : "#008000" // Green if won
-                            : hoveredMatch === index
-                            ? "#ffcccb" // Lighter red for hover if lost
-                            : "#ff0000", // Red if lost
-                      }}
-                    >
-                      <td style={{ padding: "10px" }}>
-                        {match.meta?.map?.name || "Unknown"}
-                      </td>
-                      <td style={{ padding: "10px" }}>
-                        {match.meta?.mode || "Unknown"}
-                      </td>
-                      <td style={{ padding: "10px" }}>
-                        {match.stats?.kills || 0}
-                      </td>
-                      <td style={{ padding: "10px" }}>
-                        {match.stats?.deaths || 0}
-                      </td>
-                      <td style={{ padding: "10px" }}>
-                        {match.stats?.assists || 0}
-                      </td>
-                      <td style={{ padding: "10px" }}>
-                        {(
-                          (match.stats?.kills + match.stats?.assists) /
-                          (match.stats?.deaths || 1)
-                        ).toFixed(2)}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          ) : (
-            <p>No match history available.</p>
+    <div className="profile-container">
+      <div className="profile-header">
+        <div className="player-card-container">
+          {playerStats?.card?.small && (
+            <img src={playerStats.card.small} alt="Player Card" />
           )}
         </div>
+        
+        <div className="player-info">
+          <h1 className="player-name">
+            {riotUsername}
+            <span className="player-tagline">#{riotTagline}</span>
+          </h1>
+          
+          <div className="rank-display">
+  <div className="current-rank">
+    <img 
+      src={`/rank_png/${rank?.data?.current_data?.currenttierpatched?.replace(' ', '_')}_Rank.png`}
+      alt={rank?.data?.current_data?.currenttierpatched}
+      className="rank-icon"
+      onError={(e) => {
+        e.target.src = '/rank_png/Unranked_Rank.png'; // Update fallback image path
+        e.target.onerror = null;
+      }}
+    />
+    <div className="rank-info">
+      <span className="rank-label">Current Rank</span>
+      <span className="rank-name">{rank?.data?.current_data?.currenttierpatched || "Unranked"}</span>
+    </div>
+  </div>
+  
+  <div className="highest-rank">
+    <img 
+      src={`/rank_png/${rank?.data?.highest_rank?.patched_tier?.replace(' ', '_')}_Rank.png`}
+      alt={rank?.data?.highest_rank?.patched_tier}
+      className="rank-icon"
+      onError={(e) => {
+        e.target.src = '/rank_png/Unranked_Rank.png'; // Update fallback image path
+        e.target.onerror = null;
+      }}
+    />
+    <div className="rank-info">
+      <span className="rank-label">Peak Rank</span>
+      <span className="rank-name">{rank?.data?.highest_rank?.patched_tier || "Unknown"}</span>
+    </div>
+  </div>
+</div>
+        </div>
+      </div>
 
-        {/* Line Graph */}
-        <div style={{ width: "48%", maxWidth: "600px", height: "400px", overflow: "hidden" }}>
-          <h3>MMR Change Over Matches</h3>
+      <div className="stats-grid">
+        <div className="stats-card">
+          <h3>Player Details</h3>
+          <p><strong>Region:</strong> {playerStats?.region?.toUpperCase() || "N/A"}</p>
+          <p><strong>PUUID:</strong> {puuid}</p>
+        </div>
+        
+        <div className="stats-card">
+          <h3>MMR History</h3>
           <Line data={data} options={options} />
         </div>
       </div>
+
+      <div className="match-history-container">
+  <h2 className="leaderboard-title">Match History</h2>
+  <div className="table-container">
+    <table className="match-history-table">
+      <thead>
+        <tr>
+          <th>MAP</th>
+          <th>MODE</th>
+          <th>KILLS</th>
+          <th>DEATHS</th>
+          <th>ASSISTS</th>
+          <th>KDA</th>
+        </tr>
+      </thead>
+      <tbody>
+        {matchHistory?.map((match, index) => {
+          const winningTeam = match.teams.red > match.teams.blue ? "Red" : "Blue";
+          const isWin = winningTeam === match.stats.team;
+          
+          return (
+            <tr 
+              key={index}
+              className={`match-row ${isWin ? 'match-row-win' : 'match-row-loss'}`}
+            >
+              <td>{match.meta?.map?.name || "Unknown"}</td>
+              <td>{match.meta?.mode || "Unknown"}</td>
+              <td>{match.stats?.kills || 0}</td>
+              <td>{match.stats?.deaths || 0}</td>
+              <td>{match.stats?.assists || 0}</td>
+              <td>
+                {((match.stats?.kills + match.stats?.assists) / 
+                  (match.stats?.deaths || 1)).toFixed(2)}
+              </td>
+            </tr>
+          );
+        })}
+          </tbody>
+        </table>
+      </div>
     </div>
+  </div>
   );
 }
+
 
 export default Profile;
