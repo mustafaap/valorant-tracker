@@ -6,6 +6,7 @@ import Leaderboard from "./components/Leaderboard";
 import Maps from "./components/Maps";
 import Login from "./components/Login";
 import Signup from "./components/Signup";
+import Settings from "./components/settings";
 import './App.css';
 
 function App() {
@@ -61,6 +62,17 @@ function App() {
             </div>
           }
         />
+        <Route
+          path="/settings"
+          element={
+            <div className="app-container">
+              <Sidebar />
+              <div className="content">
+                <Settings />
+              </div>
+            </div>
+          }
+        />
       </Routes>
     </Router>
   );
@@ -73,6 +85,7 @@ function Sidebar() {
       <Link to="/profile" className="tab">Profile</Link>
       <Link to="/maps" className="tab">Maps</Link>
       <Link to="/leaderboard" className="tab">Leaderboard</Link>
+      <Link to="/Settings" className="tab">Settings</Link>
     </div>
   );
 }
