@@ -3,8 +3,16 @@ import { auth, db } from "../services/firebaseConfig";
 import { doc, getDoc } from "firebase/firestore";
 import axios from "axios";
 import { Line } from "react-chartjs-2";
-import { Chart as ChartJS, LineElement, CategoryScale, LinearScale, PointElement, Tooltip, Legend } from 'chart.js';
-import './Profile.css';
+import {
+  Chart as ChartJS,
+  LineElement,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  Tooltip,
+  Legend,
+} from "chart.js";
+import "./Profile.css";
 ChartJS.register(
   LineElement,
   CategoryScale,
@@ -13,7 +21,6 @@ ChartJS.register(
   Tooltip,
   Legend
 );
-
 
 function Profile() {
   const [riotUsername, setRiotUsername] = useState("");
@@ -84,7 +91,9 @@ function Profile() {
               limitedMmrHistory.map((entry, index) => `Game ${index + 1}`)
             );
             setMmrValues(
-              limitedMmrHistory.map((entry) => entry.mmr_change_to_last_game || 0)
+              limitedMmrHistory.map(
+                (entry) => entry.mmr_change_to_last_game || 0
+              )
             );
 
             // Fetch rank
@@ -165,7 +174,7 @@ function Profile() {
     plugins: {
       tooltip: {
         enabled: true,
-        mode: 'index',
+        mode: "index",
         intersect: false,
       },
     },
@@ -179,56 +188,71 @@ function Profile() {
             <img src={playerStats.card.small} alt="Player Card" />
           )}
         </div>
-        
+
         <div className="player-info">
           <h1 className="player-name">
             {riotUsername}
             <span className="player-tagline">#{riotTagline}</span>
           </h1>
-          
+
           <div className="rank-display">
-  <div className="current-rank">
-    <img 
-      src={`/rank_png/${rank?.data?.current_data?.currenttierpatched?.replace(' ', '_')}_Rank.png`}
-      alt={rank?.data?.current_data?.currenttierpatched}
-      className="rank-icon"
-      onError={(e) => {
-        e.target.src = '/rank_png/Unranked_Rank.png'; // Update fallback image path
-        e.target.onerror = null;
-      }}
-    />
-    <div className="rank-info">
-      <span className="rank-label">Current Rank</span>
-      <span className="rank-name">{rank?.data?.current_data?.currenttierpatched || "Unranked"}</span>
-    </div>
-  </div>
-  
-  <div className="highest-rank">
-    <img 
-      src={`/rank_png/${rank?.data?.highest_rank?.patched_tier?.replace(' ', '_')}_Rank.png`}
-      alt={rank?.data?.highest_rank?.patched_tier}
-      className="rank-icon"
-      onError={(e) => {
-        e.target.src = '/rank_png/Unranked_Rank.png'; // Update fallback image path
-        e.target.onerror = null;
-      }}
-    />
-    <div className="rank-info">
-      <span className="rank-label">Peak Rank</span>
-      <span className="rank-name">{rank?.data?.highest_rank?.patched_tier || "Unknown"}</span>
-    </div>
-  </div>
-</div>
+            <div className="current-rank">
+              <img
+                src={`/rank_png/${rank?.data?.current_data?.currenttierpatched?.replace(
+                  " ",
+                  "_"
+                )}_Rank.png`}
+                alt={rank?.data?.current_data?.currenttierpatched}
+                className="rank-icon"
+                onError={(e) => {
+                  e.target.src = "/rank_png/Unranked_Rank.png"; // Update fallback image path
+                  e.target.onerror = null;
+                }}
+              />
+              <div className="rank-info">
+                <span className="rank-label">Current Rank</span>
+                <span className="rank-name">
+                  {rank?.data?.current_data?.currenttierpatched || "Unranked"}
+                </span>
+              </div>
+            </div>
+
+            <div className="highest-rank">
+              <img
+                src={`/rank_png/${rank?.data?.highest_rank?.patched_tier?.replace(
+                  " ",
+                  "_"
+                )}_Rank.png`}
+                alt={rank?.data?.highest_rank?.patched_tier}
+                className="rank-icon"
+                onError={(e) => {
+                  e.target.src = "/rank_png/Unranked_Rank.png"; // Update fallback image path
+                  e.target.onerror = null;
+                }}
+              />
+              <div className="rank-info">
+                <span className="rank-label">Peak Rank</span>
+                <span className="rank-name">
+                  {rank?.data?.highest_rank?.patched_tier || "Unknown"}
+                </span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
       <div className="stats-grid">
         <div className="stats-card">
           <h3>Player Details</h3>
-          <p><strong>Region:</strong> {playerStats?.region?.toUpperCase() || "N/A"}</p>
-          <p><strong>PUUID:</strong> {puuid}</p>
+          <p>
+            <strong>Region:</strong>{" "}
+            {playerStats?.region?.toUpperCase() || "N/A"}
+          </p>
+          <p>
+            <strong>PUUID:</strong> {puuid}
+          </p>
         </div>
-        
+
         <div className="stats-card">
           <h3>MMR History</h3>
           <Line data={data} options={options} />
@@ -236,48 +260,52 @@ function Profile() {
       </div>
 
       <div className="match-history-container">
-  <h2 className="leaderboard-title">Match History</h2>
-  <div className="table-container">
-    <table className="match-history-table">
-      <thead>
-        <tr>
-          <th>MAP</th>
-          <th>MODE</th>
-          <th>KILLS</th>
-          <th>DEATHS</th>
-          <th>ASSISTS</th>
-          <th>KDA</th>
-        </tr>
-      </thead>
-      <tbody>
-        {matchHistory?.map((match, index) => {
-          const winningTeam = match.teams.red > match.teams.blue ? "Red" : "Blue";
-          const isWin = winningTeam === match.stats.team;
-          
-          return (
-            <tr 
-              key={index}
-              className={`match-row ${isWin ? 'match-row-win' : 'match-row-loss'}`}
-            >
-              <td>{match.meta?.map?.name || "Unknown"}</td>
-              <td>{match.meta?.mode || "Unknown"}</td>
-              <td>{match.stats?.kills || 0}</td>
-              <td>{match.stats?.deaths || 0}</td>
-              <td>{match.stats?.assists || 0}</td>
-              <td>
-                {((match.stats?.kills + match.stats?.assists) / 
-                  (match.stats?.deaths || 1)).toFixed(2)}
-              </td>
-            </tr>
-          );
-        })}
-          </tbody>
-        </table>
+        <h2 className="leaderboard-title">Match History</h2>
+        <div className="table-container">
+          <table className="match-history-table">
+            <thead>
+              <tr>
+                <th>MAP</th>
+                <th>MODE</th>
+                <th>KILLS</th>
+                <th>DEATHS</th>
+                <th>ASSISTS</th>
+                <th>KDA</th>
+              </tr>
+            </thead>
+            <tbody>
+              {matchHistory?.map((match, index) => {
+                const winningTeam =
+                  match.teams.red > match.teams.blue ? "Red" : "Blue";
+                const isWin = winningTeam === match.stats.team;
+
+                return (
+                  <tr
+                    key={index}
+                    className={`match-row ${
+                      isWin ? "match-row-win" : "match-row-loss"
+                    }`}
+                  >
+                    <td>{match.meta?.map?.name || "Unknown"}</td>
+                    <td>{match.meta?.mode || "Unknown"}</td>
+                    <td>{match.stats?.kills || 0}</td>
+                    <td>{match.stats?.deaths || 0}</td>
+                    <td>{match.stats?.assists || 0}</td>
+                    <td>
+                      {(
+                        (match.stats?.kills + match.stats?.assists) /
+                        (match.stats?.deaths || 1)
+                      ).toFixed(2)}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
-  </div>
   );
 }
-
 
 export default Profile;

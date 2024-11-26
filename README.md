@@ -5,8 +5,10 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 ## Available Scripts
 
 In the project directory, you can run:
-### `make a .env file backend foler as well in the Valorant_Traker folder`
-### `Need 3 api keys one for riot firebase and HenrikDev api`
+### `link for Riot Key`
+https://developer.riotgames.com/
+### `make a .env file backend folder as well in the Valorant_Traker folder`
+### `Need 3 api keys one for riot, firebase, and HenrikDev api`
 ### `update RIOTAPI every day`
 ### `npm start`
 
