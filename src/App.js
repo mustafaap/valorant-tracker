@@ -8,6 +8,8 @@ import Agents from "./components/Agents";
 import Login from "./components/Login";
 import Signup from "./components/Signup";
 import Settings from "./components/Settings";
+import SearchAccounts from "./components/SearchAccounts";
+import WeaponPerformance from "./components/WeaponPerformance";
 import './App.css';
 
 function App() {
@@ -33,6 +35,8 @@ function App() {
                     <Route path="/agents" element = {<Agents />} />
                     <Route path="/leaderboard" element={<Leaderboard />} />
                     <Route path="/settings" element={<Settings />} />
+                    <Route path="/search" element={<SearchAccounts />} />
+                    <Route path="/weapon-performance" element={<WeaponPerformance />} />
                   </Routes>
                 </main>
               </>
@@ -51,29 +55,48 @@ function Navigation() {
         <img src="/valorant-seeklogo-2.svg" alt="Valorant Logo" className="nav-logo-img shine-effect" />
       </div>
       <div className="nav-links">
-        <NavLink 
-          to="/" 
-          className={({ isActive }) => 
+        <NavLink
+          to="/"
+          className={({ isActive }) =>
             `nav-item ${isActive ? 'nav-item-active' : ''}`
           }
           end
         >
           HOME
         </NavLink>
-        <NavLink 
-          to="/profile" 
-          className={({ isActive }) => 
+        <NavLink
+          to="/profile"
+          className={({ isActive }) =>
             `nav-item ${isActive ? 'nav-item-active' : ''}`
           }
         >
           PROFILE
         </NavLink>
-        <NavLink 
-          to="/maps" 
-          className={({ isActive }) => 
+
+
+        <NavLink
+          to="/search"
+          className={({ isActive }) =>
+            `nav-item ${isActive ? 'nav-item-active' : ''}`}
+        >
+          SEARCH
+        </NavLink>
+
+        <NavLink
+          to="/weapon-performance"
+          className={({ isActive }) =>
+             `nav-item ${isActive ? 'nav-item-active' : ''}`}
+        >
+          WEAPONS
+        </NavLink>
+
+        <NavLink
+          to="/maps"
+          className={({ isActive }) =>
             `nav-item ${isActive ? 'nav-item-active' : ''}`
           }
         >
+
           MAPS
         </NavLink>
         <NavLink
@@ -92,9 +115,9 @@ function Navigation() {
         >
           LEADERBOARD
         </NavLink>
-        <NavLink 
-          to="/settings" 
-          className={({ isActive }) => 
+        <NavLink
+          to="/settings"
+          className={({ isActive }) =>
             `nav-item ${isActive ? 'nav-item-active' : ''}`
           }
         >
