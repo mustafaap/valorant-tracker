@@ -267,22 +267,19 @@ app.post("/api/player-loadout", async (req, res) => {
   }
 
   try {
-    const response = await axios.post(
-      "https://api.henrikdev.xyz/valorant/v1/raw",
-      {
-        type: "playerloadout",
-        value: puuid,
-        region: shard,
-      },
+    const response = await axios.get(
+      `https://pd.${shard}.a.pvp.net/personalization/v2/players/${puuid}/playerloadout`,
       {
         headers: {
-          Authorization: `Bearer ${HENRIK_API_KEY}`,
-          "Content-Type": "application/json",
+          "X-Riot-ClientPlatform": process.env.CLIENT_PLATFORM, // Base64-encoded platform
+          "X-Riot-ClientVersion": process.env.CLIENT_VERSION,
+          "X-Riot-Entitlements-JWT": process.env.ENTITLEMENTS_TOKEN,
+          Authorization: `${process.env.AUTH_TOKEN}`,
         },
       }
     );
 
-    res.json(response.data);
+    res.json(response.data); // Return player loadout
   } catch (error) {
     console.error("Error fetching player loadout:", error.response?.data || error.message);
     res.status(500).json({ error: "Failed to fetch player loadout." });

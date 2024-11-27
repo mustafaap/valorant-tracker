@@ -8,7 +8,6 @@ import Login from "./components/Login";
 import Signup from "./components/Signup";
 import Settings from "./components/Settings";
 import SearchAccounts from "./components/SearchAccounts";
-import WeaponPerformance from "./components/WeaponPerformance";
 import './App.css';
 
 function App() {
@@ -34,7 +33,6 @@ function App() {
                     <Route path="/leaderboard" element={<Leaderboard />} />
                     <Route path="/settings" element={<Settings />} />
                     <Route path="/search" element={<SearchAccounts />} />
-                    <Route path="/weapon-performance" element={<WeaponPerformance />} />
                   </Routes>
                 </main>
               </>
@@ -80,13 +78,6 @@ function Navigation() {
           SEARCH
         </NavLink>
 
-        <NavLink
-          to="/weapon-performance"
-          className={({ isActive }) =>
-             `nav-item ${isActive ? 'nav-item-active' : ''}`}
-        >
-          WEAPONS
-        </NavLink>
 
         <NavLink
           to="/maps"
