@@ -100,9 +100,9 @@ const Settings = () => {
         <div className="settings-box">
           <h3>Account Settings</h3>
           <div style={{ width: '100%' }}><p>Email: {email}</p></div>
-          <button style={{ marginBottom: '25px', marginTop: '30px' }} onClick={() => setShowModal(true)}>Change Password</button>
+          <button style={{ marginBottom: '23px', marginTop: '20px' }} onClick={() => setShowModal(true)}>Change Password</button>
           <button onClick={handleLogout}>Logout</button>
-          <button style={{ marginTop: '25px' }} onClick={() => setShowConfirmModal(true)} className="delete-btn">
+          <button style={{ marginTop: '23px' }} onClick={() => setShowConfirmModal(true)} className="delete-btn">
             Delete Account Data
           </button>
         </div>

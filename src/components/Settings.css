@@ -46,7 +46,7 @@
 .settings-container input {
     margin: 5px 0;
     padding: 10px;
-    width: 94%;
+    width: 95.5%;
     background-color: #333;
     color: white;
     border: 2px solid #444;
@@ -123,6 +123,8 @@
     color: white;
     font-family: 'Roboto', sans-serif;
     font-size: 1.2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid rgba(255, 70, 85, 0.2);
 }
 
 /* Contact section */
@@ -214,4 +216,14 @@
 
 .settings-container .modal-content button:last-child:hover {
     background-color: #444;
+}
+
+/* Specific width for Account Settings section */
+.settings-container .settings-box:first-child {
+    flex: 0 0 30%; /* 40% width for Account Settings */
+  }
+  
+/* Privacy & Security takes up remaining space */
+.settings-container .settings-box:last-child {
+flex: 1; /* Take the remaining available space */
 }
