@@ -197,28 +197,19 @@ app.get("/api/account-search", async (req, res) => {
 
 
 app.get("/api/esports-schedule", async (req, res) => {
-  const { query } = req.query; // Accept a 'query' parameter
+  console.log("Received query parameter for esports schedule:", req.query.query);
 
   try {
-    const response = await axios.get(`https://api.henrikdev.xyz/valorant/v1/esports/schedule`, {
+    // Fetch the data directly from Henrik's API
+    const response = await axios.get("https://api.henrikdev.xyz/valorant/v1/esports/schedule", {
       headers: {
         Authorization: HENRIK_API_KEY,
       },
     });
 
-    let data = response.data.data;
-
-    // If a query is provided, filter the data
-    if (query) {
-      const lowerCaseQuery = query.toLowerCase();
-      data = data.filter(item => {
-        const teamMatch = item.match?.teams?.some(team => team.name.toLowerCase().includes(lowerCaseQuery));
-        const leagueMatch = item.league.name.toLowerCase().includes(lowerCaseQuery);
-        return teamMatch || leagueMatch;
-      });
-    }
-
-    res.json({ data });
+    console.log(`Fetched Esports Data: ${response.data.data.length} items`);
+    // Return the fetched data as-is
+    res.json(response.data);
   } catch (error) {
     console.error(
       "Error fetching esports schedule from Henrik API:",
@@ -229,6 +220,7 @@ app.get("/api/esports-schedule", async (req, res) => {
     });
   }
 });
+
 
 app.get("/api/match-details", async (req, res) => {
   const { matchId } = req.query;

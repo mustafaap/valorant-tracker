@@ -19,12 +19,15 @@ function SearchAccounts() {
       }
 
       try {
+
         const response = await axios.get('http://localhost:5001/api/account-search', {
           params: {
             name: searchName,
             tag: searchTag,
           },
         });
+
+  
 
         setAccountData(response.data.data);
         setEsportsData([]);
@@ -41,12 +44,17 @@ function SearchAccounts() {
         }
   
         try {
+          console.log('Making request to /api/esports-schedule with query:', searchQuery);
           const response = await axios.get('http://localhost:5001/api/esports-schedule', {
             params: {
               query: searchQuery,
             },
           });
-  
+          
+
+          console.log('Esports Schedule Data Response:', response.data);
+
+
           setEsportsData(response.data.data);
           setAccountData(null);
           setError('');
@@ -125,37 +133,89 @@ function SearchAccounts() {
         </div>
       )}
 
-      {esportsData.length > 0 && (
-        <div className="esports-results">
-          <h3>Esports Matches</h3>
-          <div className="schedule-list">
-            {esportsData.map((item, index) => (
-              <div key={index} className="schedule-item">
-                <p><strong>Date:</strong> {new Date(item.date).toLocaleString()}</p>
-                <p><strong>League:</strong> {item.league.name}</p>
-                {item.match && item.match.teams && (
-                  <div>
-                    <p><strong>Teams:</strong></p>
-                    <ul>
-                      {item.match.teams.map((team, idx) => (
-                        <li key={idx}>{team.name}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-                <p><strong>Match Type:</strong> {item.type}</p>
-                {item.vod && (
-                  <p>
-                    <a href={item.vod} target="_blank" rel="noopener noreferrer">
-                      Watch VOD
-                    </a>
-                  </p>
-                )}
-              </div>
-            ))}
+{esportsData.length > 0 && (
+  <div className="esports-results">
+    <h3>Esports Matches</h3>
+    <div className="schedule-list">
+      {esportsData.map((item, index) => (
+        <div key={index} className="schedule-item">
+          {/* League Details */}
+          <div className="match-header">
+            {item.league.icon && (
+              <img
+                src={item.league.icon}
+                alt={`${item.league.name} Icon`}
+                className="league-icon"
+              />
+            )}
+            <div className="league-details">
+              <h4>{item.league.name}</h4>
+              <p className="league-region">{item.league.region}</p>
+            </div>
           </div>
+
+          {/* Match Details */}
+          <p><strong>Date:</strong> {new Date(item.date).toLocaleString()}</p>
+          {item.tournament && (
+            <p><strong>Tournament:</strong> {item.tournament.name} ({item.tournament.season})</p>
+          )}
+
+          {/* Teams Details */}
+          {item.match?.teams && (
+            <div className="teams-container">
+              {item.match.teams.map((team, idx) => (
+                <div key={idx} className="team-info">
+                  {team.icon && (
+                    <img
+                      src={team.icon}
+                      alt={`${team.name} Logo`}
+                      className="team-icon"
+                    />
+                  )}
+                  <div>
+                    <p className="team-name">{team.name}</p>
+                    <p className="team-score">
+                      <strong>Score:</strong> {team.game_wins}
+                    </p>
+                    <p className={`team-status ${team.has_won ? "winner" : "loser"}`}>
+                      {team.has_won ? "Winner" : "Loser"}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Match Type */}
+          {item.match?.game_type && (
+            <p>
+              <strong>Game Type:</strong> {item.match.game_type.type} (
+              Best of {item.match.game_type.count})
+            </p>
+          )}
+
+          {/* Match State */}
+          <p><strong>Match State:</strong> {item.state}</p>
+
+          {/* VOD Link */}
+          {item.vod && (
+            <p>
+              <a
+                href={item.vod}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="vod-link"
+              >
+                Watch VOD
+              </a>
+            </p>
+          )}
         </div>
-      )}
+      ))}
+    </div>
+  </div>
+)}
+
     </div>
   );
 }

@@ -101,3 +101,75 @@
     text-decoration: underline;
   }
   
+
+  .esports-results {
+    margin-top: 2rem;
+  }
+  
+  .schedule-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  
+  .schedule-item {
+    background: rgba(31, 31, 47, 0.9);
+    padding: 1.5rem;
+    border-radius: 8px;
+    border: 1px solid var(--valorant-red);
+  }
+  
+  .match-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+  
+  .league-icon {
+    width: 50px;
+    height: 50px;
+    margin-right: 1rem;
+  }
+  
+  .teams-container {
+    display: flex;
+    justify-content: space-between;
+    margin: 1rem 0;
+  }
+  
+  .team-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .team-icon {
+    width: 60px;
+    height: 60px;
+    margin-bottom: 0.5rem;
+  }
+  
+  .team-name {
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+  }
+  
+  .team-score {
+    font-size: 1.1rem;
+  }
+  
+  .vod-link {
+    color: var(--valorant-red);
+    text-decoration: none;
+    font-weight: bold;
+  }
+  
+  .vod-link:hover {
+    text-decoration: underline;
+  }
+  
+  .error-message {
+    color: var(--valorant-red);
+    margin-top: 1rem;
+  }
+  
