@@ -3,6 +3,7 @@ import { auth, db } from '../services/firebaseConfig';
 import { signOut, updatePassword, reauthenticateWithCredential, EmailAuthProvider } from 'firebase/auth';
 import { doc, getDoc, setDoc, deleteDoc } from 'firebase/firestore';
 import './Settings.css';
+
 const Settings = () => {
   const [email, setEmail] = useState('');
   const [riotUsername, setRiotUsername] = useState('');
@@ -30,7 +31,7 @@ const Settings = () => {
   const handleLogout = async () => {
     try {
       await signOut(auth);
-      window.location.reload(); 
+      window.location.reload();
     } catch (err) {
       setError('Error logging out.');
     }
@@ -83,13 +84,14 @@ const Settings = () => {
         <h1 >Settings</h1>
         <p>You must be logged in to access the user settings page. Please log in first.</p>
         <div className="section">
-        <h3 style={{}}>Contact</h3>
-        <p>If you need support, reach out to: support@valoranttracker.com</p>
+          <h3 style={{}}>Contact</h3>
+          <p>If you need support, reach out to: support@valoranttracker.com</p>
+        </div>
       </div>
-      </div>
-      
+
     );
   }
+
   return (
     <div className="settings-container">
       <h1>Settings</h1>
@@ -97,10 +99,10 @@ const Settings = () => {
         {/* Account Settings */}
         <div className="settings-box">
           <h3>Account Settings</h3>
-          <div style={{width: '100%'}}><p>Email: {email}</p></div>
-          <button style={{marginBottom: '25px', marginTop   : '30px'}} onClick={() => setShowModal(true)}>Change Password</button>
+          <div style={{ width: '100%' }}><p>Email: {email}</p></div>
+          <button style={{ marginBottom: '23px', marginTop: '20px' }} onClick={() => setShowModal(true)}>Change Password</button>
           <button onClick={handleLogout}>Logout</button>
-          <button style={{marginTop   : '25px'}} onClick={() => setShowConfirmModal(true)} className="delete-btn">
+          <button style={{ marginTop: '23px' }} onClick={() => setShowConfirmModal(true)} className="delete-btn">
             Delete Account Data
           </button>
         </div>
