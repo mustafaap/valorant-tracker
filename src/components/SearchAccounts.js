@@ -11,6 +11,7 @@ function SearchAccounts() {
   const [esportsData, setEsportsData] = useState([]);
   const [error, setError] = useState('');
   const [favoriteWeapon, setFavoriteWeapon] = useState('');
+  const [averageDamage, setAverageDamage] = useState('');
 
   const weaponMapping = {
     a: 'Vandal',
@@ -41,6 +42,30 @@ function SearchAccounts() {
     z: 'Operator',
   };
 
+  const averageDamageMapping = {
+    Vandal: 160,
+    Phantom: 140,
+    Operator: 200,
+    Sheriff: 150,
+    Guardian: 180,
+    Judge: 90,
+    Marshal: 100,
+    Spectre: 120,
+    Stinger: 80,
+    Classic: 78,
+    Frenzy: 90,
+    Ghost: 105,
+    Bulldog: 130,
+    Ares: 95,
+    Odin: 85,
+    Shorty: 50,
+    Knife: 30,
+    Bucky: 70,
+    Headhunter: 155,
+    'Tour De Force': 250,
+    Rendezvous: 300, 
+  };
+
   const handleSearch = async () => {
     if (searchType === 'player') {
       if (!searchName || !searchTag) {
@@ -62,8 +87,12 @@ function SearchAccounts() {
         const firstLetter = searchName[0].toLowerCase();
         const weapon = weaponMapping[firstLetter] || 'Unknown Weapon';
 
+        // Assign average damage based on the weapon
+        const damage = averageDamageMapping[weapon] || 'Unknown Damage';
+
         setAccountData(accountData);
         setFavoriteWeapon(weapon);
+        setAverageDamage(damage);
         setEsportsData([]);
         setError('');
       } catch (err) {
@@ -71,6 +100,7 @@ function SearchAccounts() {
         setError('Account not found or error fetching data.');
         setAccountData(null);
         setFavoriteWeapon('');
+        setAverageDamage('');
       }
     } else if (searchType === 'esports') {
       if (!searchQuery) {
@@ -88,6 +118,7 @@ function SearchAccounts() {
         setEsportsData(response.data.data);
         setAccountData(null);
         setFavoriteWeapon('');
+        setAverageDamage('');
         setError('');
       } catch (err) {
         console.error('Error fetching esports data:', err);
@@ -162,6 +193,7 @@ function SearchAccounts() {
           <p><strong>Region:</strong> {accountData.region.toUpperCase()}</p>
           <p><strong>PUUID:</strong> {accountData.puuid}</p>
           <p><strong>Favorite Weapon:</strong> {favoriteWeapon}</p>
+          <p><strong>Average Damage:</strong> {averageDamage}</p>
         </div>
       )}
 
