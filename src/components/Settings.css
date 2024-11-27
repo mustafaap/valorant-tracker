@@ -220,7 +220,7 @@
 
 /* Specific width for Account Settings section */
 .settings-container .settings-box:first-child {
-    flex: 0 0 30%; /* 40% width for Account Settings */
+    flex: 0 0 35%; /* 40% width for Account Settings */
   }
   
 /* Privacy & Security takes up remaining space */
