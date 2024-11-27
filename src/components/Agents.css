@@ -3,17 +3,20 @@
     width: 100%;
     height: 100%;
     transform-style: preserve-3d;
-    transition: transform 0.6s;
+    transition: transform 0.6s ease-in-out; /* Smooth transition for flip */
     position: relative;
     border: 1px solid white; /* White border around the card */
     border-radius: 10px; /* Optional: rounded corners for a smoother look */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    perspective: 1000px; /* 3D perspective for the flip effect */
   }
   
+  /* Flip on hover */
   .card-container:hover {
     transform: rotateY(180deg); /* Flip the card */
   }
   
+  /* Set up the card faces */
   .card-front,
   .card-back {
     position: absolute;
@@ -22,18 +25,20 @@
     right: 0;
     bottom: 0;
     backface-visibility: hidden; /* Hide the back when it's facing away */
+    display: flex;
+    justify-content: center;
+    align-items: center; /* Center the content */
   }
   
+  /* Front side */
   .card-front {
     transform: rotateY(0deg); /* Front of the card */
   }
   
+  /* Back side */
   .card-back {
     transform: rotateY(180deg); /* Back of the card */
-    display: flex;
     flex-direction: column; /* Stack name and description */
-    justify-content: center;
-    align-items: center;
     padding: 20px;
     text-align: center;
   }
@@ -45,5 +50,18 @@
   .card-back p {
     color: #555;
     margin: 0;
+  }
+  
+  /* For smooth transition when removing hover */
+  .card-container {
+    transition: transform 0.6s ease-in-out;
+  }
+  
+  .card-container:hover {
+    transform: rotateY(180deg); /* Flip immediately when hovered */
+  }
+  
+  .card-container:not(:hover) {
+    transform: rotateY(0deg); /* Flip back immediately */
   }
   
