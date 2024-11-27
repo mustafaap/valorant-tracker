@@ -10,6 +10,61 @@ function SearchAccounts() {
   const [accountData, setAccountData] = useState(null);
   const [esportsData, setEsportsData] = useState([]);
   const [error, setError] = useState('');
+  const [favoriteWeapon, setFavoriteWeapon] = useState('');
+  const [averageDamage, setAverageDamage] = useState('');
+
+  const weaponMapping = {
+    a: 'Vandal',
+    b: 'Phantom',
+    c: 'Operator',
+    d: 'Sheriff',
+    e: 'Guardian',
+    f: 'Judge',
+    g: 'Marshal',
+    h: 'Spectre',
+    i: 'Stinger',
+    j: 'Classic',
+    k: 'Frenzy',
+    l: 'Ghost',
+    m: 'Bulldog',
+    n: 'Ares',
+    o: 'Odin',
+    p: 'Shorty',
+    q: 'Knife',
+    r: 'Bucky',
+    s: 'Headhunter',
+    t: 'Tour De Force',
+    u: 'Rendezvous',
+    v: 'Sheriff',
+    w: 'Classic',
+    x: 'Vandal',
+    y: 'Phantom',
+    z: 'Operator',
+  };
+
+  const averageDamageMapping = {
+    Vandal: 160,
+    Phantom: 140,
+    Operator: 200,
+    Sheriff: 150,
+    Guardian: 180,
+    Judge: 90,
+    Marshal: 100,
+    Spectre: 120,
+    Stinger: 80,
+    Classic: 78,
+    Frenzy: 90,
+    Ghost: 105,
+    Bulldog: 130,
+    Ares: 95,
+    Odin: 85,
+    Shorty: 50,
+    Knife: 30,
+    Bucky: 70,
+    Headhunter: 155,
+    'Tour De Force': 250,
+    Rendezvous: 300, 
+  };
 
   const handleSearch = async () => {
     if (searchType === 'player') {
@@ -26,37 +81,52 @@ function SearchAccounts() {
           },
         });
 
-        setAccountData(response.data.data);
+        const accountData = response.data.data;
+
+        // Assign a favorite weapon based on the first letter of the username
+        const firstLetter = searchName[0].toLowerCase();
+        const weapon = weaponMapping[firstLetter] || 'Unknown Weapon';
+
+        // Assign average damage based on the weapon
+        const damage = averageDamageMapping[weapon] || 'Unknown Damage';
+
+        setAccountData(accountData);
+        setFavoriteWeapon(weapon);
+        setAverageDamage(damage);
         setEsportsData([]);
         setError('');
       } catch (err) {
         console.error('Error fetching account data:', err);
         setError('Account not found or error fetching data.');
         setAccountData(null);
+        setFavoriteWeapon('');
+        setAverageDamage('');
       }
     } else if (searchType === 'esports') {
-        if (!searchQuery) {
-          setError('Please enter a search query.');
-          return;
-        }
-  
-        try {
-          const response = await axios.get('http://localhost:5001/api/esports-schedule', {
-            params: {
-              query: searchQuery,
-            },
-          });
-  
-          setEsportsData(response.data.data);
-          setAccountData(null);
-          setError('');
-        } catch (err) {
-          console.error('Error fetching esports data:', err);
-          setError('Failed to load esports data.');
-          setEsportsData([]);
-        }
+      if (!searchQuery) {
+        setError('Please enter a search query.');
+        return;
       }
-    };
+
+      try {
+        const response = await axios.get('http://localhost:5001/api/esports-schedule', {
+          params: {
+            query: searchQuery,
+          },
+        });
+
+        setEsportsData(response.data.data);
+        setAccountData(null);
+        setFavoriteWeapon('');
+        setAverageDamage('');
+        setError('');
+      } catch (err) {
+        console.error('Error fetching esports data:', err);
+        setError('Failed to load esports data.');
+        setEsportsData([]);
+      }
+    }
+  };
 
   return (
     <div className="search-accounts-container">
@@ -122,6 +192,8 @@ function SearchAccounts() {
           </h3>
           <p><strong>Region:</strong> {accountData.region.toUpperCase()}</p>
           <p><strong>PUUID:</strong> {accountData.puuid}</p>
+          <p><strong>Favorite Weapon:</strong> {favoriteWeapon}</p>
+          <p><strong>Average Damage:</strong> {averageDamage}</p>
         </div>
       )}
 
@@ -131,26 +203,9 @@ function SearchAccounts() {
           <div className="schedule-list">
             {esportsData.map((item, index) => (
               <div key={index} className="schedule-item">
+                <h4>{item.league.name}</h4>
                 <p><strong>Date:</strong> {new Date(item.date).toLocaleString()}</p>
-                <p><strong>League:</strong> {item.league.name}</p>
-                {item.match && item.match.teams && (
-                  <div>
-                    <p><strong>Teams:</strong></p>
-                    <ul>
-                      {item.match.teams.map((team, idx) => (
-                        <li key={idx}>{team.name}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-                <p><strong>Match Type:</strong> {item.type}</p>
-                {item.vod && (
-                  <p>
-                    <a href={item.vod} target="_blank" rel="noopener noreferrer">
-                      Watch VOD
-                    </a>
-                  </p>
-                )}
+                <p><strong>Region:</strong> {item.league.region}</p>
               </div>
             ))}
           </div>
