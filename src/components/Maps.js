@@ -56,7 +56,7 @@ const mapsData = [
 function Maps() {
   return (
     <div style={{ padding: "20px" }}>
-      <h2 style={{ textAlign: "center", marginBottom: "20px" }}>Valorant Maps</h2>
+      <h1 style={{ textAlign: "center", marginBottom: "30px" }}>Valorant Maps</h1>
       <div
         style={{
           display: "grid",
