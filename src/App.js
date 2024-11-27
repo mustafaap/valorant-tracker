@@ -4,6 +4,7 @@ import HomePage from "./components/HomePage";
 import Profile from "./components/Profile";
 import Leaderboard from "./components/Leaderboard";
 import Maps from "./components/Maps";
+import Agents from "./components/Agents";
 import Login from "./components/Login";
 import Signup from "./components/Signup";
 import Settings from "./components/Settings";
@@ -30,6 +31,7 @@ function App() {
                     <Route path="/" element={<HomePage />} />
                     <Route path="/profile" element={<Profile />} />
                     <Route path="/maps" element={<Maps />} />
+                    <Route path="/agents" element = {<Agents />} />
                     <Route path="/leaderboard" element={<Leaderboard />} />
                     <Route path="/settings" element={<Settings />} />
                     <Route path="/search" element={<SearchAccounts />} />
@@ -89,8 +91,16 @@ function Navigation() {
           MAPS
         </NavLink>
         <NavLink
-          to="/leaderboard"
-          className={({ isActive }) =>
+          to="/agents"
+          className = {({isActive}) =>
+            `nav-item ${isActive ? 'nav-item-active': ''}`
+        }
+        >
+          AGENTS
+        </NavLink>
+        <NavLink 
+          to="/leaderboard" 
+          className={({ isActive }) => 
             `nav-item ${isActive ? 'nav-item-active' : ''}`
           }
         >
