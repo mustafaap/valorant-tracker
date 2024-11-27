@@ -121,7 +121,7 @@
     align-items: center;
     background-color: #222;
     color: white;
-    box-shadow: 0 0px 8px #FF4655;
+    border: 1px solid var(--valorant-red);
 }
 
 .settings-container .settings-box h3 {
