@@ -1,6 +1,16 @@
-# Getting Started with Create React App
+# Valorant Tracker
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+![image](https://github.com/user-attachments/assets/602ba8db-95f1-4e52-9102-e6c9a2ca842d)
+
+## About 
+
+Developed a web application to track and display player statistics for the game Valorant, utilizing the Valorant API for
+real-time data retrieval. Designed features including player performance tracking, match history, and rank progression
+visualization to enhance user engagement through an interactive interface. Leveraged JavaScript, HTML, and CSS for
+dynamic front-end interactivity and a user-friendly design while using Firebase for data storage. Conducted rigorous
+testing to validate API data and optimize performance, delivering a reliable and efficient platform for gamers.
+
+• Technologies Used: Java, React, Javascript, HTML/CSS, Firebase, JSX, Git/GitHub, RESTful architechture
 
 ## Available Scripts
 
